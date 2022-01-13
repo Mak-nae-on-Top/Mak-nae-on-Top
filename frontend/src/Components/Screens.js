@@ -1,14 +1,23 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, SafeAreaView, Button} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
 import 'react-native-gesture-handler';
 
 import {SwipeablePanel} from 'rn-swipeable-panel';
 
+import SearchBar from './SearchBar';
+
 const HomeScreen = () => {
   const [panelProps, setPanelProps] = useState({
     fullWidth: true,
-    openLarge: true,
-    // showCloseButton: true,
+    openLarge: false,
+    smallPanelHeight: 350,
     closeOnTouchOutside: true,
     onClose: () => closePanel(),
     // onPressCloseButton: () => closePanel(),
@@ -23,12 +32,43 @@ const HomeScreen = () => {
     setIsPanelActive(false);
   };
 
+  const handleExitBtn = () => {
+    closePanel();
+  };
+
+  const handleToiletBtn = () => {
+    closePanel();
+  };
+  const handleFireplugBtn = () => {
+    closePanel();
+  };
+  const handleDefiBtn = () => {
+    closePanel();
+  };
+
   const PanelContent = () => {
+    // const [flexDirection, setflexDirection] = useState("column");
     return (
       <>
-        <View>
-          <Text>hihihihhiihi</Text>
+        <View style={styles.padding}>
+          <View style={[styles.row]}>
+            <TouchableOpacity style={styles.PanelBtn} onPress={handleExitBtn}>
+              <Text style={[styles.buttonLabel]}>Exit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.PanelBtn} onPress={handleToiletBtn}>
+              <Text style={[styles.buttonLabel]}>Toilet</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.PanelBtn}
+              onPress={handleFireplugBtn}>
+              <Text style={[styles.buttonLabel]}>Fireplug</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.PanelBtn} onPress={handleDefiBtn}>
+              <Text style={[styles.buttonLabel]}>Defibrillator</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+        <View style={styles.searchBar}>{<SearchBar />}</View>
       </>
     );
   };
@@ -80,11 +120,15 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   PanelBtn: {
-    borderWidth: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: 'oldlace',
     alignSelf: 'flex-start',
-    minWidth: '48%',
-    textAlign: 'center',
-    // width: '33%',
+    marginHorizontal: '3%',
+    marginBottom: 6,
+    minWidth: '44%',
+    marginBottom: 15,
   },
   row: {
     flexDirection: 'row',
@@ -92,6 +136,21 @@ const styles = StyleSheet.create({
   },
   SearchBtn: {
     width: '50%',
+    alignSelf: 'center',
+  },
+  buttonLabel: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'coral',
+    textAlign: 'center',
+  },
+  padding: {
+    padding: 10,
+  },
+  searchBar: {
+    width: '90%',
     alignSelf: 'center',
   },
 });
