@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Switch,
+  Button,
 } from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -17,9 +18,11 @@ import {
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 
 import hamburger from '../images/Hamburger.png';
 import Home from '../Routes/Home';
+import {HomeScreen, LoginScreen, BlueprintScreen} from './Screens';
 
 const HamburgerIcon = props => {
   const toggleDrawer = () => {
@@ -85,44 +88,7 @@ const CustomSidebar = props => {
   );
 };
 
-const HomeScreen = () => {
-  return (
-    <SafeAreaView flex={1}>
-      <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Home Screen </Text>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-const LoginScreen = () => {
-  return (
-    <SafeAreaView flex={1}>
-      <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Login Screen </Text>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-const BlueprintScreen = () => {
-  return (
-    <SafeAreaView flex={1}>
-      <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Blueprint Screen </Text>
-      </View>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
-  MainContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-
   sectionView: {
     flex: 1,
     flexDirection: 'row',
@@ -253,43 +219,43 @@ const SideBar = () => {
                 </Text>
                 <View style={styles.separatorLine} />
               </View>
-              <TouchableOpacity>
-                <View style={styles.item}>
-                  <Text style={styles.locationLabel}>
-                    Share my location info
-                  </Text>
-                  <View style={styles.switchContainer}>
-                    <Switch
-                      trackColor={{false: '#767577', true: '#d3e3d6'}}
-                      thumbColor={locationEnabled ? '#4dff73' : '#f4f3f4'}
-                      ios_backgroundColor="#d3e3d6"
-                      onValueChange={toggleLocationSwitch}
-                      value={locationEnabled}
-                    />
-                  </View>
+              {/* <TouchableOpacity onClick={toggleLocationSwitch}> */}
+              <View style={styles.item}>
+                <Text style={styles.locationLabel}>
+                  📍 Share my location info
+                </Text>
+                <View style={styles.switchContainer}>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#d3e3d6'}}
+                    thumbColor={locationEnabled ? '#4dff73' : '#f4f3f4'}
+                    ios_backgroundColor="#d3e3d6"
+                    onValueChange={toggleLocationSwitch}
+                    value={locationEnabled}
+                  />
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.item}>
-                  <Text style={styles.fireLabel}>Get fire alarm</Text>
-                  <View style={styles.switchContainer}>
-                    <Switch
-                      trackColor={{false: '#767577', true: '#d3e3d6'}}
-                      thumbColor={alarmEnabled ? 'red' : '#f4f3f4'}
-                      ios_backgroundColor="#d3e3d6"
-                      onValueChange={toggleAlarmSwitch}
-                      value={alarmEnabled}
-                    />
-                  </View>
+              </View>
+              {/* </TouchableOpacity> */}
+              {/* <TouchableOpacity> */}
+              <View style={styles.item}>
+                <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
+                <View style={styles.switchContainer}>
+                  <Switch
+                    trackColor={{false: '#767577', true: '#d3e3d6'}}
+                    thumbColor={alarmEnabled ? 'red' : '#f4f3f4'}
+                    ios_backgroundColor="#d3e3d6"
+                    onValueChange={toggleAlarmSwitch}
+                    value={alarmEnabled}
+                  />
                 </View>
-              </TouchableOpacity>
+              </View>
+              {/* </TouchableOpacity> */}
             </DrawerContentScrollView>
           );
         }}>
         <Drawer.Screen
           name="Home"
           options={{
-            drawerLabel: 'Home',
+            drawerLabel: '🏠 Home',
             groupName: 'Home',
             activeTintColor: '#FF6F00',
           }}
@@ -299,7 +265,7 @@ const SideBar = () => {
         <Drawer.Screen
           name="Login"
           options={{
-            drawerLabel: 'Login',
+            drawerLabel: '🔒 Login',
             groupName: 'Manage',
             activeTintColor: '#FF6F00',
           }}
@@ -309,7 +275,7 @@ const SideBar = () => {
         <Drawer.Screen
           name="Blueprint"
           options={{
-            drawerLabel: 'Make a blueprint',
+            drawerLabel: '📷 Make a blueprint',
             groupName: 'Manage',
             activeTintColor: '#FF6F00',
           }}
