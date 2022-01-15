@@ -346,6 +346,8 @@ PODS:
   - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
+  - RNSearchBar (3.5.1):
+    - React
   - RNVectorIcons (9.0.0):
     - React-Core
   - Yoga (1.14.0)
@@ -409,6 +411,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSearchBar (from `../node_modules/react-native-search-bar`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -496,6 +499,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSearchBar:
+    :path: "../node_modules/react-native-search-bar"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -548,6 +553,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
+  RNSearchBar: 9860431356b7d12a8449d2fddb2b5f3c78d1e99f
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
   Yoga: e7dc4e71caba6472ff48ad7d234389b91dadc280
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
