@@ -6,30 +6,25 @@ import {
   SafeAreaView,
   Button,
   TouchableOpacity,
+  Dimensions,
+  Animated,
+  Image,
 } from 'react-native';
 import 'react-native-gesture-handler';
-
-import {SwipeablePanel} from 'rn-swipeable-panel';
-
-import SearchBar from './SearchBar';
+import {Searchbar} from 'react-native-paper';
+import SlidingUpPanel from 'rn-sliding-up-panel';
+import bar from '../images/Bar.png';
 
 const HomeScreen = () => {
-  const [panelProps, setPanelProps] = useState({
-    fullWidth: true,
-    openLarge: false,
-    smallPanelHeight: 350,
-    closeOnTouchOutside: true,
-    onClose: () => closePanel(),
-    // onPressCloseButton: () => closePanel(),
-  });
-  const [isPanelActive, setIsPanelActive] = useState();
-
-  const openPanel = () => {
-    setIsPanelActive(true);
+  const windowHeight = Dimensions.get('window').height;
+  const defaultProps = {
+    draggableRange: {top: windowHeight - 100, bottom: 0},
   };
+  const {top, bottom} = defaultProps.draggableRange;
+  const [draggedValue] = useState(() => new Animated.Value(0));
 
   const closePanel = () => {
-    setIsPanelActive(false);
+    draggedValue.setValue(0);
   };
 
   const handleExitBtn = () => {
@@ -46,10 +41,26 @@ const HomeScreen = () => {
     closePanel();
   };
 
+  const clickOnSearchBar = () => {
+    draggedValue.setValue(top);
+  };
+
   const PanelContent = () => {
-    // const [flexDirection, setflexDirection] = useState("column");
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const onChangeSearch = query => setSearchQuery(query);
     return (
       <>
+        <View>
+          <Image
+            source={bar}
+            style={{
+              marginTop: 6,
+              height: 5,
+              width: 50,
+            }}
+          />
+        </View>
         <View style={styles.padding}>
           <View style={[styles.row]}>
             <TouchableOpacity style={styles.PanelBtn} onPress={handleExitBtn}>
@@ -68,7 +79,14 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.searchBar}>{<SearchBar />}</View>
+        <View style={styles.searchBar}>
+          <Searchbar
+            placeholder="Type your destination"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            onFocus={clickOnSearchBar}
+          />
+        </View>
       </>
     );
   };
@@ -78,17 +96,35 @@ const HomeScreen = () => {
       <View style={styles.MainContainer}>
         <Text style={{fontSize: 25, color: 'black'}}> Home Screen </Text>
       </View>
-      <View style={styles.SearchBtn}>
-        <Button color="black" title="🔍 Click to search" onPress={openPanel} />
-      </View>
-      <SwipeablePanel {...panelProps} isActive={isPanelActive}>
+      <Button
+        color="black"
+        title="🔍 Click to search"
+        onPress={() => this._panel.show(250)}
+      />
+      <SlidingUpPanel
+        snappingPoints={[250, top]}
+        animatedValue={draggedValue}
+        draggableRange={{top: top, bottom: bottom}}
+        onBackButtonPress="true"
+        containerStyle={styles.PanelContainer}
+        height={windowHeight - 100}
+        friction={3}
+        ref={c => (this._panel = c)}>
         <PanelContent />
-      </SwipeablePanel>
+      </SlidingUpPanel>
     </SafeAreaView>
   );
 };
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = () => {
+    setLoading(true);
+  };
+
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
@@ -115,10 +151,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
   },
-  BtnContainer: {
-    // flex: 1,
-    flexWrap: 'wrap',
-  },
   PanelBtn: {
     paddingHorizontal: 8,
     paddingVertical: 6,
@@ -134,10 +166,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  SearchBtn: {
-    width: '50%',
-    alignSelf: 'center',
-  },
   buttonLabel: {
     paddingTop: 5,
     paddingBottom: 5,
@@ -152,6 +180,13 @@ const styles = StyleSheet.create({
   searchBar: {
     width: '90%',
     alignSelf: 'center',
+  },
+  PanelContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 30,
+    // justifyContent: 'center',
   },
 });
 
