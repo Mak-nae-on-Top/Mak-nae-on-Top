@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Switch,
-  Button,
 } from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -15,13 +14,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import {SwipeablePanel} from 'rn-swipeable-panel';
 
 import hamburger from '../images/Hamburger.png';
-import Home from '../Routes/Home';
 import {HomeScreen, LoginScreen, BlueprintScreen} from './Screens';
 
 const HamburgerIcon = props => {
@@ -47,27 +43,26 @@ const HamburgerIcon = props => {
 
 const CustomSidebar = props => {
   const {state, descriptors, navigation} = props;
-  let lastGroupName = '';
+  let exGroupName = '';
   let newGroup = true;
 
   return (
     <SafeAreaView style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         {state.routes.map(route => {
-          const {drawerLabel, activeTintColor, groupName} =
+          const {drawerLabel, groupName, activeTintColor} =
             descriptors[route.key].options;
-          if (lastGroupName !== groupName) {
-            newGroup = true;
-            lastGroupName = groupName;
-          } else newGroup = false;
+          exGroupName !== groupName
+            ? [(newGroup = true), (exGroupName = groupName)]
+            : (newGroup = false);
           return (
             <>
               {newGroup ? (
-                <View style={styles.sectionView}>
+                <View style={styles.sideBarSection}>
                   <Text key={groupName} style={{marginLeft: 10}}>
                     {groupName}
                   </Text>
-                  <View style={styles.separatorLine} />
+                  <View style={styles.sectionSeparator} />
                 </View>
               ) : null}
               <DrawerItem
@@ -89,22 +84,21 @@ const CustomSidebar = props => {
 };
 
 const styles = StyleSheet.create({
-  sectionView: {
+  sideBarSection: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 12,
   },
-  separatorLine: {
+  sectionSeparator: {
     flex: 1,
     backgroundColor: 'black',
-    height: 1.2,
-    marginLeft: 12,
-    marginRight: 24,
+    height: 1,
+    marginLeft: 10,
+    marginRight: 18,
   },
   item: {
     flexDirection: 'row',
-    // color: '#FF6F00',
     alignItems: 'center',
   },
   fireLabel: {
@@ -118,8 +112,6 @@ const styles = StyleSheet.create({
   switchContainer: {
     marginHorizontal: 16,
     width: 24,
-    // alignSelf: 'flex-end',
-    // alignItems: 'flex-start',
     position: 'absolute',
     right: 40,
   },
@@ -146,10 +138,6 @@ const HomeStack = ({navigation}) => {
         options={{
           title: ' ',
           headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
-          // headerStyle: {
-          //   backgroundColor: '#FF9800',
-          // },
-          // headerTintColor: '#fff',
         }}
       />
     </Stack.Navigator>
@@ -205,7 +193,6 @@ const SideBar = () => {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        // drawerContent={props => <CustomSidebarMenu {...props} />}
         screenOptions={{
           headerShown: false,
         }}
@@ -213,13 +200,12 @@ const SideBar = () => {
           return (
             <DrawerContentScrollView {...props}>
               <CustomSidebar {...props} />
-              <View style={styles.sectionView}>
+              <View style={styles.sideBarSection}>
                 <Text key="Information" style={{marginLeft: 10}}>
                   Information
                 </Text>
-                <View style={styles.separatorLine} />
+                <View style={styles.sectionSeparator} />
               </View>
-              {/* <TouchableOpacity onClick={toggleLocationSwitch}> */}
               <View style={styles.item}>
                 <Text style={styles.locationLabel}>
                   📍 Share my location info
@@ -234,8 +220,6 @@ const SideBar = () => {
                   />
                 </View>
               </View>
-              {/* </TouchableOpacity> */}
-              {/* <TouchableOpacity> */}
               <View style={styles.item}>
                 <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
                 <View style={styles.switchContainer}>
@@ -248,7 +232,6 @@ const SideBar = () => {
                   />
                 </View>
               </View>
-              {/* </TouchableOpacity> */}
             </DrawerContentScrollView>
           );
         }}>
@@ -257,7 +240,7 @@ const SideBar = () => {
           options={{
             drawerLabel: '🏠 Home',
             groupName: 'Home',
-            activeTintColor: '#FF6F00',
+            activeTintColor: '#282828',
           }}
           component={HomeStack}
         />
@@ -267,7 +250,7 @@ const SideBar = () => {
           options={{
             drawerLabel: '🔒 Login',
             groupName: 'Manage',
-            activeTintColor: '#FF6F00',
+            activeTintColor: '#282828',
           }}
           component={LoginStack}
         />
@@ -277,7 +260,7 @@ const SideBar = () => {
           options={{
             drawerLabel: '📷 Make a blueprint',
             groupName: 'Manage',
-            activeTintColor: '#FF6F00',
+            activeTintColor: '#282828',
           }}
           component={BlueprintStack}
         />
