@@ -55,6 +55,8 @@ const HomeScreen = () => {
           <Image
             source={bar}
             style={{
+              borderRadius: 10,
+              tintColor: '#707070',
               marginTop: 6,
               height: 5,
               width: 50,
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 50,
-    backgroundColor: 'oldlace',
+    backgroundColor: '#EEEEEE',
     alignSelf: 'flex-start',
     marginHorizontal: '3%',
     marginBottom: 6,
@@ -171,11 +173,12 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     fontSize: 20,
     fontWeight: '700',
-    color: 'coral',
+    color: '#282828',
     textAlign: 'center',
   },
   padding: {
     padding: 10,
+    paddingTop: 20,
   },
   searchBar: {
     width: '90%',
