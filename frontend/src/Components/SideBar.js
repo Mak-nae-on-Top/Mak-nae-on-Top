@@ -1,45 +1,14 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  SafeAreaView,
-  Switch,
-} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Switch} from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItem,
 } from '@react-navigation/drawer';
 
-import hamburger from '../images/Hamburger.png';
-import {HomeScreen, LoginScreen, BlueprintScreen} from './Screens';
-
-const HamburgerIcon = props => {
-  const toggleDrawer = () => {
-    props.navigationProps.toggleDrawer();
-  };
-
-  return (
-    <View style={{flexDirection: 'row'}}>
-      <TouchableOpacity onPress={toggleDrawer}>
-        <Image
-          source={hamburger}
-          style={{
-            marginLeft: 20,
-            height: 30,
-            width: 30,
-          }}
-        />
-      </TouchableOpacity>
-    </View>
-  );
-};
+import {HomeStack, LoginStack, BlueprintStack, SignupStack} from './Stacks';
 
 const CustomSidebar = props => {
   const {state, descriptors, navigation} = props;
@@ -115,72 +84,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 40,
   },
-  icon: {
-    width: 24,
-    height: 24,
-  },
 });
 
-const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-
-const HomeStack = ({navigation}) => {
-  return (
-    <Stack.Navigator
-      initialRouteName="HomeScreen"
-      screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-      }}>
-      <Stack.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{
-          title: ' ',
-          headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const LoginStack = ({navigation}) => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-        headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
-      }}>
-      <Stack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{
-          title: ' ',
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const BlueprintStack = ({navigation}) => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-        headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
-      }}>
-      <Stack.Screen
-        name="BlueprintScreen"
-        component={BlueprintScreen}
-        options={{
-          title: ' ',
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
 
 const SideBar = () => {
   const [locationEnabled, setLocationEnabled] = useState(false);
@@ -197,15 +103,25 @@ const SideBar = () => {
           headerShown: false,
         }}
         drawerContent={props => {
+          const filteredProps = {
+            ...props,
+            state: {
+              ...props.state,
+              routes: props.state.routes.filter(
+                route => route.name !== 'Signup',
+              ),
+            },
+          };
           return (
-            <DrawerContentScrollView {...props}>
-              <CustomSidebar {...props} />
+            <DrawerContentScrollView {...filteredProps}>
+              <CustomSidebar {...filteredProps} />
               <View style={styles.sideBarSection}>
                 <Text key="Information" style={{marginLeft: 10}}>
                   Information
                 </Text>
                 <View style={styles.sectionSeparator} />
               </View>
+
               <View style={styles.item}>
                 <Text style={styles.locationLabel}>
                   📍 Share my location info
@@ -220,6 +136,7 @@ const SideBar = () => {
                   />
                 </View>
               </View>
+
               <View style={styles.item}>
                 <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
                 <View style={styles.switchContainer}>
@@ -263,6 +180,12 @@ const SideBar = () => {
             activeTintColor: '#282828',
           }}
           component={BlueprintStack}
+        />
+
+        <Drawer.Screen
+          name="Signup"
+          options={{drawerLabel: 'Signup'}}
+          component={SignupStack}
         />
       </Drawer.Navigator>
     </NavigationContainer>

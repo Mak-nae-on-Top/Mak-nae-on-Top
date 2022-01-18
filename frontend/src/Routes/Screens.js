@@ -120,8 +120,8 @@ const HomeScreen = () => {
   );
 };
 
-const LoginScreen = () => {
-  const [id, setId] = useState('');
+const LoginScreen = ({navigation}) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -144,8 +144,8 @@ const LoginScreen = () => {
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            placeholder="Enter your ID"
-            onChangeText={id => setId(id)}
+            placeholder="Enter your E-mail"
+            onChangeText={email => setEmail(email)}
             placeholderTextColor="#282828"
           />
         </View>
@@ -161,7 +161,9 @@ const LoginScreen = () => {
           />
         </View>
         <View style={styles.row}>
-          <TouchableOpacity style={styles.loginBtn}>
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.loginText}>SIGNUP</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.loginBtn}>
@@ -181,6 +183,77 @@ const BlueprintScreen = () => {
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
         <Text style={{fontSize: 25, color: 'black'}}> Blueprint Screen </Text>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const SignupScreen = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = () => {
+    setLoading(true);
+  };
+
+  return (
+    <SafeAreaView flex={1}>
+      <View style={styles.MainContainer}>
+        {/* <View>
+          <Image
+            source={logo}
+            style={{
+              height: 100,
+              width: 100,
+            }}
+          />
+        </View> */}
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Enter your Name"
+            onChangeText={name => setName(name)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Enter your E-mail"
+            onChangeText={email => setEmail(email)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="
+            Enter your Password"
+            secureTextEntry={true}
+            onChangeText={password => setPassword(password)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="
+            Re-enter your Password"
+            secureTextEntry={true}
+            onChangeText={password2 => setPassword2(password2)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+        <TouchableOpacity style={styles.registerBtn}>
+          <Text style={styles.loginText}>REGISTER</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text>Already have an account?</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -244,7 +317,6 @@ const styles = StyleSheet.create({
   },
   loginBtn: {
     minWidth: '38.5%',
-    // width: '38.5%',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
@@ -257,6 +329,15 @@ const styles = StyleSheet.create({
   loginText: {
     color: 'white',
   },
+  registerBtn: {
+    backgroundColor: 'green',
+    borderRadius: 30,
+    width: '80%',
+    height: 45,
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
-export {HomeScreen, LoginScreen, BlueprintScreen};
+export {HomeScreen, LoginScreen, BlueprintScreen, SignupScreen};
