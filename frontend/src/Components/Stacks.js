@@ -4,7 +4,12 @@ import 'react-native-gesture-handler';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import hamburger from '../images/Hamburger.png';
-import {HomeScreen, LoginScreen, BlueprintScreen} from './Screens';
+import {
+  HomeScreen,
+  LoginScreen,
+  BlueprintScreen,
+  SignupScreen,
+} from '../Routes/Screens';
 
 const HamburgerIcon = props => {
   const toggleDrawer = () => {
@@ -87,4 +92,18 @@ const BlueprintStack = ({navigation}) => {
   );
 };
 
-export {HomeStack, LoginStack, BlueprintStack};
+const SignupStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignupScreen"
+        component={SignupScreen}
+        options={{
+          title: ' ',
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+export {HomeStack, LoginStack, BlueprintStack, SignupStack};

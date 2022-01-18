@@ -120,7 +120,7 @@ const HomeScreen = () => {
   );
 };
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -161,7 +161,9 @@ const LoginScreen = () => {
           />
         </View>
         <View style={styles.row}>
-          <TouchableOpacity style={styles.loginBtn}>
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.loginText}>SIGNUP</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.loginBtn}>
@@ -181,6 +183,16 @@ const BlueprintScreen = () => {
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
         <Text style={{fontSize: 25, color: 'black'}}> Blueprint Screen </Text>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const SignupScreen = () => {
+  return (
+    <SafeAreaView flex={1}>
+      <View style={styles.MainContainer}>
+        <Text style={{fontSize: 25, color: 'black'}}> Signup Screen </Text>
       </View>
     </SafeAreaView>
   );
@@ -259,4 +271,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {HomeScreen, LoginScreen, BlueprintScreen};
+export {HomeScreen, LoginScreen, BlueprintScreen, SignupScreen};

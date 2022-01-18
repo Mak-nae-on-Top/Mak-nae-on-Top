@@ -8,7 +8,7 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 
-import {HomeStack, LoginStack, BlueprintStack} from './Stacks';
+import {HomeStack, LoginStack, BlueprintStack, SignupStack} from './Stacks';
 
 const CustomSidebar = props => {
   const {state, descriptors, navigation} = props;
@@ -103,15 +103,28 @@ const SideBar = () => {
           headerShown: false,
         }}
         drawerContent={props => {
+          const filteredProps = {
+            ...props,
+            state: {
+              ...props.state,
+              routeNames: props.state.routeNames.filter(routeName => {
+                routeName !== 'Signup';
+              }),
+              routes: props.state.routes.filter(
+                route => route.name !== 'Signup',
+              ),
+            },
+          };
           return (
-            <DrawerContentScrollView {...props}>
-              <CustomSidebar {...props} />
+            <DrawerContentScrollView {...filteredProps}>
+              <CustomSidebar {...filteredProps} />
               <View style={styles.sideBarSection}>
                 <Text key="Information" style={{marginLeft: 10}}>
                   Information
                 </Text>
                 <View style={styles.sectionSeparator} />
               </View>
+
               <View style={styles.item}>
                 <Text style={styles.locationLabel}>
                   📍 Share my location info
@@ -126,6 +139,7 @@ const SideBar = () => {
                   />
                 </View>
               </View>
+
               <View style={styles.item}>
                 <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
                 <View style={styles.switchContainer}>
@@ -169,6 +183,12 @@ const SideBar = () => {
             activeTintColor: '#282828',
           }}
           component={BlueprintStack}
+        />
+
+        <Drawer.Screen
+          name="Signup"
+          options={{drawerLabel: 'Signup'}}
+          component={SignupStack}
         />
       </Drawer.Navigator>
     </NavigationContainer>
