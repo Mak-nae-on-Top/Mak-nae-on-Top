@@ -92,9 +92,14 @@ const BlueprintStack = ({navigation}) => {
   );
 };
 
-const SignupStack = () => {
+const SignupStack = ({navigation}) => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerTransparent: true,
+        headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
+      }}>
       <Stack.Screen
         name="SignupScreen"
         component={SignupScreen}

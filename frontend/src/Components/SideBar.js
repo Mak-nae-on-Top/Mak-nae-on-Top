@@ -107,9 +107,6 @@ const SideBar = () => {
             ...props,
             state: {
               ...props.state,
-              routeNames: props.state.routeNames.filter(routeName => {
-                routeName !== 'Signup';
-              }),
               routes: props.state.routes.filter(
                 route => route.name !== 'Signup',
               ),
