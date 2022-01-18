@@ -9,11 +9,13 @@ import {
   Dimensions,
   Animated,
   Image,
+  TextInput,
 } from 'react-native';
 import 'react-native-gesture-handler';
 import {Searchbar} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import bar from '../images/Bar.png';
+import logo from '../images/Logo.png';
 
 const HomeScreen = () => {
   const windowHeight = Dimensions.get('window').height;
@@ -119,7 +121,7 @@ const HomeScreen = () => {
 };
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState('');
+  const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -130,7 +132,45 @@ const LoginScreen = () => {
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Login Screen </Text>
+        <View>
+          <Image
+            source={logo}
+            style={{
+              height: 200,
+              width: 200,
+            }}
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="Enter your ID"
+            onChangeText={id => setId(id)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.TextInput}
+            placeholder="
+            Enter your Password"
+            secureTextEntry={true}
+            onChangeText={password => setPassword(password)}
+            placeholderTextColor="#282828"
+          />
+        </View>
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.loginBtn}>
+            <Text style={styles.loginText}>SIGNUP</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.loginBtn}>
+            <Text style={styles.loginText}>LOGIN</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity>
+          <Text>Forgot Password?</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -157,10 +197,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 50,
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#E6E6E6',
     alignSelf: 'flex-start',
     marginHorizontal: '3%',
-    marginBottom: 6,
     minWidth: '44%',
     marginBottom: 15,
   },
@@ -189,7 +228,34 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 30,
-    // justifyContent: 'center',
+  },
+  inputView: {
+    backgroundColor: '#D4D4D4',
+    borderRadius: 30,
+    width: '80%',
+    height: 45,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  TextInput: {
+    height: 50,
+    flex: 1,
+    padding: 10,
+  },
+  loginBtn: {
+    minWidth: '38.5%',
+    // width: '38.5%',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'green',
+    alignSelf: 'flex-start',
+    marginHorizontal: '1.5%',
+    height: 37,
+    marginBottom: 10,
+  },
+  loginText: {
+    color: 'white',
   },
 });
 
