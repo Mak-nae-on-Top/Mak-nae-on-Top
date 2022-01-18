@@ -203,15 +203,15 @@ const SignupScreen = () => {
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
-        {/* <View>
+        <View>
           <Image
             source={logo}
             style={{
-              height: 100,
-              width: 100,
+              height: 150,
+              width: 150,
             }}
           />
-        </View> */}
+        </View>
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
