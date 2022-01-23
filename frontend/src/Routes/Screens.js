@@ -17,7 +17,7 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
 
-const HomeScreen = () => {
+const HomeScreen = ({locationEnabled}) => {
   const windowHeight = Dimensions.get('window').height;
   const defaultProps = {
     draggableRange: {top: windowHeight - 100, bottom: 0},
@@ -98,7 +98,11 @@ const HomeScreen = () => {
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Home Screen </Text>
+        {locationEnabled ? (
+          <Text>위치 정보 켜짐</Text>
+        ) : (
+          <Text style={{fontSize: 25, color: 'black'}}> Home Screen </Text>
+        )}
       </View>
       <Button
         color="black"

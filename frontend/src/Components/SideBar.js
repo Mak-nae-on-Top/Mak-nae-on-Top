@@ -10,48 +10,6 @@ import {
 
 import {HomeStack, LoginStack, BlueprintStack, SignupStack} from './Stacks';
 
-const CustomSidebar = props => {
-  const {state, descriptors, navigation} = props;
-  let exGroupName = '';
-  let newGroup = true;
-
-  return (
-    <SafeAreaView style={{flex: 1}}>
-      <DrawerContentScrollView {...props}>
-        {state.routes.map(route => {
-          const {drawerLabel, groupName, activeTintColor} =
-            descriptors[route.key].options;
-          exGroupName !== groupName
-            ? [(newGroup = true), (exGroupName = groupName)]
-            : (newGroup = false);
-          return (
-            <>
-              {newGroup ? (
-                <View style={styles.sideBarSection}>
-                  <Text key={groupName} style={{marginLeft: 10}}>
-                    {groupName}
-                  </Text>
-                  <View style={styles.sectionSeparator} />
-                </View>
-              ) : null}
-              <DrawerItem
-                key={route.key}
-                label={({color}) => <Text style={{color}}>{drawerLabel}</Text>}
-                focused={
-                  state.routes.findIndex(e => e.name === route.name) ===
-                  state.index
-                }
-                activeTintColor={activeTintColor}
-                onPress={() => navigation.navigate(route.name)}
-              />
-            </>
-          );
-        })}
-      </DrawerContentScrollView>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
   sideBarSection: {
     flex: 1,
@@ -86,13 +44,60 @@ const styles = StyleSheet.create({
   },
 });
 
+const CustomSidebar = props => {
+  const {state, descriptors, navigation} = props;
+  let exGroupName = '';
+  let newGroup = true;
+
+  return (
+    <SafeAreaView style={{flex: 1}}>
+      <DrawerContentScrollView {...props}>
+        {state.routes.map(route => {
+          const {drawerLabel, groupName, activeTintColor, locationEnabled} =
+            descriptors[route.key].options;
+          exGroupName !== groupName
+            ? [(newGroup = true), (exGroupName = groupName)]
+            : (newGroup = false);
+          return (
+            <>
+              {newGroup ? (
+                <View style={styles.sideBarSection}>
+                  <Text key={groupName} style={{marginLeft: 10}}>
+                    {groupName}
+                  </Text>
+                  <View style={styles.sectionSeparator} />
+                </View>
+              ) : null}
+              <DrawerItem
+                key={route.key}
+                label={({color}) => <Text style={{color}}>{drawerLabel}</Text>}
+                focused={
+                  state.routes.findIndex(e => e.name === route.name) ===
+                  state.index
+                }
+                activeTintColor={activeTintColor}
+                onPress={() =>
+                  navigation.navigate(route.name, {
+                    locationEnabled: locationEnabled,
+                  })
+                }
+              />
+            </>
+          );
+        })}
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+};
+
 const Drawer = createDrawerNavigator();
 
 const SideBar = () => {
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [alarmEnabled, setAlarmEnabled] = useState(false);
-  const toggleLocationSwitch = () =>
+  const toggleLocationSwitch = () => {
     setLocationEnabled(previousState => !previousState);
+  };
   const toggleAlarmSwitch = () =>
     setAlarmEnabled(previousState => !previousState);
 
@@ -115,6 +120,7 @@ const SideBar = () => {
           return (
             <DrawerContentScrollView {...filteredProps}>
               <CustomSidebar {...filteredProps} />
+
               <View style={styles.sideBarSection}>
                 <Text key="Information" style={{marginLeft: 10}}>
                   Information
@@ -158,8 +164,11 @@ const SideBar = () => {
             drawerLabel: '🏠 Home',
             groupName: 'Home',
             activeTintColor: '#282828',
+            locationEnabled: locationEnabled,
           }}
-          component={HomeStack}
+          component={props => (
+            <HomeStack locationEnabled={locationEnabled} props={props} />
+          )}
         />
 
         <Drawer.Screen
