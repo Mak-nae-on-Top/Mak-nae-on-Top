@@ -34,7 +34,7 @@ const HamburgerIcon = props => {
 
 const Stack = createStackNavigator();
 
-const HomeStack = ({navigation}) => {
+const HomeStack = ({locationEnabled, props}) => {
   return (
     <Stack.Navigator
       initialRouteName="HomeScreen"
@@ -44,10 +44,12 @@ const HomeStack = ({navigation}) => {
       }}>
       <Stack.Screen
         name="HomeScreen"
-        component={HomeScreen}
+        component={() => <HomeScreen locationEnabled={locationEnabled} />}
         options={{
           title: ' ',
-          headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
+          headerLeft: () => (
+            <HamburgerIcon navigationProps={props.navigation} />
+          ),
         }}
       />
     </Stack.Navigator>

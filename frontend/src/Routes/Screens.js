@@ -16,8 +16,9 @@ import {Searchbar} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
+import Beacon from '../Components/Beacons.ios.js';
 
-const HomeScreen = () => {
+const HomeScreen = ({locationEnabled}) => {
   const windowHeight = Dimensions.get('window').height;
   const defaultProps = {
     draggableRange: {top: windowHeight - 100, bottom: 0},
@@ -98,7 +99,19 @@ const HomeScreen = () => {
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Home Screen </Text>
+        {locationEnabled ? (
+          <Beacon />
+        ) : (
+          <>
+            <Text style={{fontSize: 25, color: 'black'}}>
+              If you want to use BFF service,
+            </Text>
+            <Text style={{fontSize: 25, color: 'black'}}>please agree to</Text>
+            <Text style={{fontSize: 25, color: 'black', fontWeight: 'bold'}}>
+              Share my location info
+            </Text>
+          </>
+        )}
       </View>
       <Button
         color="black"
