@@ -496,7 +496,7 @@ const BlueprintScreen = () => {
   );
 };
 
-const SignupScreen = () => {
+const SignupScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -559,7 +559,7 @@ const SignupScreen = () => {
         <TouchableOpacity style={styles.registerBtn}>
           <Text style={styles.loginText}>REGISTER</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text>Already have an account?</Text>
         </TouchableOpacity>
       </View>
