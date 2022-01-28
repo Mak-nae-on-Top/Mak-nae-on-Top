@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   AccList: {
-    marginTop: 40,
+    marginTop: 50,
     borderTopWidth: 1,
   },
-  AccContainer: {
-    paddingTop: 10,
-  },
+  // AccContainer: {
+  // paddingTop: 10,
+  // },
   uploadBtnContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -297,10 +297,26 @@ const LoginScreen = ({navigation}) => {
 };
 
 const BlueprintScreen = () => {
-  const [expanded, setExpanded] = useState(false);
   const [response, setResponse] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [activeIndex, setActiveIndex] = useState();
+
   const includeExtra = true;
+
+  const accordionList = [
+    {
+      title: 'Upload Blueprint',
+      iconName: 'map',
+    },
+    {
+      title: 'Uploaded Bluprint List',
+      iconName: 'list',
+    },
+    {
+      title: 'Needs to be fixed',
+      iconName: 'warning',
+    },
+  ];
 
   const actions = [
     {
@@ -358,83 +374,115 @@ const BlueprintScreen = () => {
     }
   }, []);
 
+  const handleAccordionClick = index => {
+    activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
+  };
+
   return (
     <SafeAreaView flex={1}>
-      <View style={styles.AccContainer}>
-        <View style={styles.AccList}>
-          <ListItem.Accordion
-            content={
-              <>
-                <Icon name="map" size={30} style={{marginRight: 20}} />
-                <ListItem.Content>
-                  <ListItem.Title>Upload Blueprint</ListItem.Title>
-                </ListItem.Content>
-              </>
-            }
-            isExpanded={expanded}
-            onPress={() => {
-              setExpanded(!expanded);
-            }}>
-            <View style={styles.uploadBtnContainer}>
-              {actions.map(({title, type, options}) => {
-                return (
-                  <UploadBtn
-                    key={title}
-                    onPress={() => handleGetBlueprintBtn(type, options)}>
-                    {title}
-                  </UploadBtn>
-                );
-              })}
-            </View>
-
-            {/* Json response */}
-            {/* <UploadResponse>{response}</UploadResponse> */}
-
-            {/* Images that user choose */}
-            {response?.assets &&
-              response?.assets.map(({uri}) => (
-                <View key={uri} style={styles.ResponseImage}>
-                  <Image
-                    resizeMode="cover"
-                    resizeMethod="scale"
-                    style={{width: 200, height: 200}}
-                    source={{uri: uri}}
+      <View style={styles.AccList}>
+        {accordionList.map((item, index) => {
+          return (
+            <ListItem.Accordion
+              bottomDivider
+              content={
+                <>
+                  <Icon
+                    name={item.iconName}
+                    size={30}
+                    style={{marginRight: 20}}
                   />
-                </View>
-              ))}
+                  <ListItem.Content>
+                    <ListItem.Title>{item.title}</ListItem.Title>
+                  </ListItem.Content>
+                </>
+              }
+              isExpanded={activeIndex === index}
+              onPress={() => {
+                handleAccordionClick(index);
+              }}>
+              {/* Upload Blueprint */}
+              {index === 0 && (
+                <>
+                  <View style={styles.uploadBtnContainer}>
+                    {actions.map(({title, type, options}) => {
+                      return (
+                        <UploadBtn
+                          key={title}
+                          onPress={() => handleGetBlueprintBtn(type, options)}>
+                          {title}
+                        </UploadBtn>
+                      );
+                    })}
+                  </View>
+                  {/* Json response */}
+                  {/* <UploadResponse>{response}</UploadResponse> */}
 
-            {uploadSuccess ? (
-              <View style={styles.UploadSuccessContainer}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', marginTop: 20}}>
-                  Successfully Uploaded
-                </Text>
-              </View>
-            ) : (
-              []
-            )}
+                  {/* Images that user choose */}
+                  {response?.assets &&
+                    response?.assets.map(({uri}) => (
+                      <View key={uri} style={styles.ResponseImage}>
+                        <Image
+                          resizeMode="cover"
+                          resizeMethod="scale"
+                          style={{width: 200, height: 200}}
+                          source={{uri: uri}}
+                        />
+                      </View>
+                    ))}
 
-            {/* Upload Btn & Delete Btn */}
-            {response ? (
-              !response.didCancel ? (
-                <View style={styles.uploadBtnContainer}>
-                  {actions2.map(({title, type}) => {
-                    return (
-                      <UploadBtn
-                        key={title}
-                        onPress={() => handleChosenBlueprintBtn(type)}>
-                        {title}
-                      </UploadBtn>
-                    );
-                  })}
-                </View>
-              ) : (
-                []
-              )
-            ) : (
-              []
-            )}
-          </ListItem.Accordion>
-        </View>
+                  {uploadSuccess ? (
+                    <View style={styles.UploadSuccessContainer}>
+                      <Text
+                        style={{
+                          fontSize: 30,
+                          fontWeight: 'bold',
+                          marginTop: 20,
+                        }}>
+                        Successfully Uploaded
+                      </Text>
+                    </View>
+                  ) : (
+                    []
+                  )}
+
+                  {/* Upload Btn & Delete Btn */}
+                  {response ? (
+                    !response.didCancel ? (
+                      <View style={styles.uploadBtnContainer}>
+                        {actions2.map(({title, type}) => {
+                          return (
+                            <UploadBtn
+                              key={title}
+                              onPress={() => handleChosenBlueprintBtn(type)}>
+                              {title}
+                            </UploadBtn>
+                          );
+                        })}
+                      </View>
+                    ) : (
+                      []
+                    )
+                  ) : (
+                    []
+                  )}
+                </>
+              )}
+
+              {/* Uploaded Blueprint List */}
+              {index === 1 && (
+                <>{/* todo : Get user's blueprint list from database */}</>
+              )}
+
+              {/* List that needs to be fixed */}
+              {index === 2 && (
+                <>
+                  {/* todo : Get user's blueprint list that needs to be fixed from database */}
+                </>
+              )}
+            </ListItem.Accordion>
+          );
+        })}
       </View>
     </SafeAreaView>
   );
