@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,12 +11,117 @@ import {
   Image,
   TextInput,
 } from 'react-native';
+import {ListItem, Icon} from 'react-native-elements';
 import 'react-native-gesture-handler';
 import {Searchbar} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Beacon from '../Components/Beacons.ios.js';
+import UploadBtn from '../Components/Blueprint/UploadBtn';
+import UploadResponse from '../Components/Blueprint/UploadResponse';
+
+const styles = StyleSheet.create({
+  MainContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  PanelBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 50,
+    backgroundColor: '#E6E6E6',
+    alignSelf: 'flex-start',
+    marginHorizontal: '3%',
+    minWidth: '44%',
+    marginBottom: 15,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  buttonLabel: {
+    paddingTop: 5,
+    paddingBottom: 5,
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#282828',
+    textAlign: 'center',
+  },
+  padding: {
+    padding: 10,
+    paddingTop: 20,
+  },
+  searchBar: {
+    width: '90%',
+    alignSelf: 'center',
+  },
+  PanelContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 30,
+  },
+  inputView: {
+    backgroundColor: '#D4D4D4',
+    borderRadius: 30,
+    width: '80%',
+    height: 45,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  TextInput: {
+    height: 50,
+    flex: 1,
+    padding: 10,
+  },
+  loginBtn: {
+    minWidth: '38.5%',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'green',
+    alignSelf: 'flex-start',
+    marginHorizontal: '1.5%',
+    height: 37,
+    marginBottom: 10,
+  },
+  loginText: {
+    color: 'white',
+  },
+  registerBtn: {
+    backgroundColor: 'green',
+    borderRadius: 30,
+    width: '80%',
+    height: 45,
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  AccList: {
+    marginTop: 40,
+    borderTopWidth: 1,
+  },
+  AccContainer: {
+    paddingTop: 10,
+  },
+  uploadBtnContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginVertical: 8,
+  },
+  ResponseImage: {
+    marginVertical: 24,
+    alignItems: 'center',
+  },
+  UploadSuccessContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 const HomeScreen = ({locationEnabled}) => {
   const windowHeight = Dimensions.get('window').height;
@@ -192,10 +297,144 @@ const LoginScreen = ({navigation}) => {
 };
 
 const BlueprintScreen = () => {
+  const [expanded, setExpanded] = useState(false);
+  const [response, setResponse] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const includeExtra = true;
+
+  const actions = [
+    {
+      title: 'Take Blueprint',
+      type: 'capture',
+      options: {
+        saveToPhotos: true,
+        mediaType: 'photo',
+        includeBase64: false,
+        includeExtra,
+      },
+    },
+    {
+      title: 'Select Blueprint',
+      type: 'library',
+      options: {
+        maxHeight: 200,
+        maxWidth: 200,
+        selectionLimit: 0,
+        mediaType: 'photo',
+        includeBase64: false,
+        includeExtra,
+      },
+    },
+  ];
+
+  const actions2 = [
+    {
+      title: 'Upload Blueprint',
+      type: 'upload',
+    },
+    {
+      title: 'Delete Blueprint',
+      type: 'delete',
+    },
+  ];
+
+  const handleGetBlueprintBtn = useCallback((type, options) => {
+    if (type === 'capture') {
+      launchCamera(options, setResponse);
+    } else {
+      launchImageLibrary(options, setResponse);
+    }
+  }, []);
+
+  const handleChosenBlueprintBtn = useCallback(type => {
+    if (type === 'upload') {
+      // todo : image upload to database
+
+      setUploadSuccess(true);
+      setResponse(null);
+    } else {
+      setUploadSuccess(false);
+      setResponse(null);
+    }
+  }, []);
+
   return (
     <SafeAreaView flex={1}>
-      <View style={styles.MainContainer}>
-        <Text style={{fontSize: 25, color: 'black'}}> Blueprint Screen </Text>
+      <View style={styles.AccContainer}>
+        <View style={styles.AccList}>
+          <ListItem.Accordion
+            content={
+              <>
+                <Icon name="map" size={30} style={{marginRight: 20}} />
+                <ListItem.Content>
+                  <ListItem.Title>Upload Blueprint</ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            isExpanded={expanded}
+            onPress={() => {
+              setExpanded(!expanded);
+            }}>
+            <View style={styles.uploadBtnContainer}>
+              {actions.map(({title, type, options}) => {
+                return (
+                  <UploadBtn
+                    key={title}
+                    onPress={() => handleGetBlueprintBtn(type, options)}>
+                    {title}
+                  </UploadBtn>
+                );
+              })}
+            </View>
+
+            {/* Json response */}
+            {/* <UploadResponse>{response}</UploadResponse> */}
+
+            {/* Images that user choose */}
+            {response?.assets &&
+              response?.assets.map(({uri}) => (
+                <View key={uri} style={styles.ResponseImage}>
+                  <Image
+                    resizeMode="cover"
+                    resizeMethod="scale"
+                    style={{width: 200, height: 200}}
+                    source={{uri: uri}}
+                  />
+                </View>
+              ))}
+
+            {uploadSuccess ? (
+              <View style={styles.UploadSuccessContainer}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', marginTop: 20}}>
+                  Successfully Uploaded
+                </Text>
+              </View>
+            ) : (
+              []
+            )}
+
+            {/* Upload Btn & Delete Btn */}
+            {response ? (
+              !response.didCancel ? (
+                <View style={styles.uploadBtnContainer}>
+                  {actions2.map(({title, type}) => {
+                    return (
+                      <UploadBtn
+                        key={title}
+                        onPress={() => handleChosenBlueprintBtn(type)}>
+                        {title}
+                      </UploadBtn>
+                    );
+                  })}
+                </View>
+              ) : (
+                []
+              )
+            ) : (
+              []
+            )}
+          </ListItem.Accordion>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -271,86 +510,5 @@ const SignupScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  MainContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  PanelBtn: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 50,
-    backgroundColor: '#E6E6E6',
-    alignSelf: 'flex-start',
-    marginHorizontal: '3%',
-    minWidth: '44%',
-    marginBottom: 15,
-  },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  buttonLabel: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#282828',
-    textAlign: 'center',
-  },
-  padding: {
-    padding: 10,
-    paddingTop: 20,
-  },
-  searchBar: {
-    width: '90%',
-    alignSelf: 'center',
-  },
-  PanelContainer: {
-    flex: 1,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderRadius: 30,
-  },
-  inputView: {
-    backgroundColor: '#D4D4D4',
-    borderRadius: 30,
-    width: '80%',
-    height: 45,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  TextInput: {
-    height: 50,
-    flex: 1,
-    padding: 10,
-  },
-  loginBtn: {
-    minWidth: '38.5%',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'green',
-    alignSelf: 'flex-start',
-    marginHorizontal: '1.5%',
-    height: 37,
-    marginBottom: 10,
-  },
-  loginText: {
-    color: 'white',
-  },
-  registerBtn: {
-    backgroundColor: 'green',
-    borderRadius: 30,
-    width: '80%',
-    height: 45,
-    marginBottom: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export {HomeScreen, LoginScreen, BlueprintScreen, SignupScreen};
