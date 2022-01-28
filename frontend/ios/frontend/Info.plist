@@ -26,11 +26,15 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
 		</dict>
@@ -38,7 +42,11 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Our app uses bluetooth to find, connect and transfer data between different devices.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Our app uses Location to find, connect and transfer data between different devices.</string>
+	<string>When It Use Location</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Our app uses your library to upload your blueprint images.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Our app uses your camera to upload your blueprint images.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
