@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, NativeEventEmitter} from 'react-native';
+import {StyleSheet, Text, View, NativeEventEmitter} from 'react-native';
 
 import Kontakt, {KontaktModule} from 'react-native-kontaktio';
 
@@ -12,14 +12,6 @@ const {
   startRangingBeaconsInRegion,
   getRangedRegions,
 } = Kontakt;
-
-const styles = StyleSheet.create({
-  beaconView: {
-    // justifyContent: 'space-around',
-    alignItems: 'center',
-    padding: 10,
-  },
-});
 
 const kontaktEmitter = new NativeEventEmitter(KontaktModule);
 const region1 = {
@@ -150,5 +142,12 @@ const RangingBeacon = () => {
 
   return renderRangedBeacons();
 };
+
+const styles = StyleSheet.create({
+  beaconView: {
+    alignItems: 'center',
+    padding: 10,
+  },
+});
 
 export default RangingBeacon;
