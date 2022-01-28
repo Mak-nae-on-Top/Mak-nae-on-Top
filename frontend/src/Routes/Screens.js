@@ -15,9 +15,12 @@ import {ListItem, Icon} from 'react-native-elements';
 import 'react-native-gesture-handler';
 import {Searchbar} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Beacon from '../Components/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
@@ -30,13 +33,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   PanelBtn: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    marginTop: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     borderRadius: 50,
     backgroundColor: '#E6E6E6',
     alignSelf: 'flex-start',
-    marginHorizontal: '3%',
-    minWidth: '44%',
+    marginHorizontal: '1%',
+    minWidth: '16%',
     marginBottom: 15,
   },
   row: {
@@ -105,9 +109,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
     borderTopWidth: 1,
   },
-  // AccContainer: {
-  // paddingTop: 10,
-  // },
   uploadBtnContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -142,10 +143,10 @@ const HomeScreen = ({locationEnabled}) => {
   const handleToiletBtn = () => {
     closePanel();
   };
-  const handleFireplugBtn = () => {
+  const handleFireExtingiuisherBtn = () => {
     closePanel();
   };
-  const handleDefiBtn = () => {
+  const handleDefibrillatorBtn = () => {
     closePanel();
   };
 
@@ -172,20 +173,26 @@ const HomeScreen = ({locationEnabled}) => {
           />
         </View>
         <View style={styles.padding}>
-          <View style={[styles.row]}>
+          <View style={styles.row}>
             <TouchableOpacity style={styles.PanelBtn} onPress={handleExitBtn}>
-              <Text style={[styles.buttonLabel]}>Exit</Text>
+              <MaterialCommunityIcons name="exit-run" size={60} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.PanelBtn} onPress={handleToiletBtn}>
-              <Text style={[styles.buttonLabel]}>Toilet</Text>
+              <MaterialCommunityIcons name="human-male-female" size={60} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.PanelBtn}
-              onPress={handleFireplugBtn}>
-              <Text style={[styles.buttonLabel]}>Fireplug</Text>
+              onPress={handleFireExtingiuisherBtn}>
+              <FontAwesome
+                name="fire-extinguisher"
+                size={60}
+                style={{marginLeft: 5, marginRight: 5}}
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.PanelBtn} onPress={handleDefiBtn}>
-              <Text style={[styles.buttonLabel]}>Defibrillator</Text>
+            <TouchableOpacity
+              style={styles.PanelBtn}
+              onPress={handleDefibrillatorBtn}>
+              <FontAwesome name="heartbeat" size={60} />
             </TouchableOpacity>
           </View>
         </View>
@@ -221,16 +228,16 @@ const HomeScreen = ({locationEnabled}) => {
       <Button
         color="black"
         title="🔍 Click to search"
-        onPress={() => this._panel.show(250)}
+        onPress={() => this._panel.show(220)}
       />
       <SlidingUpPanel
-        snappingPoints={[250, top]}
+        snappingPoints={[220, top]}
         animatedValue={draggedValue}
         draggableRange={{top: top, bottom: bottom}}
         onBackButtonPress="true"
         containerStyle={styles.PanelContainer}
         height={windowHeight - 100}
-        friction={3}
+        friction={5}
         ref={c => (this._panel = c)}>
         <PanelContent />
       </SlidingUpPanel>
@@ -437,7 +444,8 @@ const BlueprintScreen = () => {
                         style={{
                           fontSize: 30,
                           fontWeight: 'bold',
-                          marginTop: 20,
+                          marginTop: 10,
+                          marginBottom: 20,
                         }}>
                         Successfully Uploaded
                       </Text>

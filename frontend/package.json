@@ -20,6 +20,7 @@
     "react-native-bottom-drawer-view": "^1.0.3",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-picker": "^4.7.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-kontaktio": "^2.10.0",
     "react-native-paper": "^4.11.1",
@@ -43,7 +44,6 @@
     "eslint": "^8.6.0",
     "jest": "^27.4.7",
     "metro-react-native-babel-preset": "^0.66.2",
-    "react-native-bluetooth-state": "^2.0.0",
     "react-test-renderer": "17.0.2"
   },
   "jest": {
