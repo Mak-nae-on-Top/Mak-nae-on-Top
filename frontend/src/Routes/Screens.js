@@ -341,7 +341,7 @@ const BlueprintScreen = () => {
       type: 'library',
       options: {
         maxHeight: 200,
-        maxWidth: 200,
+        maxWidth: 300,
         selectionLimit: 0,
         mediaType: 'photo',
         includeBase64: false,
@@ -427,16 +427,21 @@ const BlueprintScreen = () => {
 
                   {/* Images that user choose */}
                   {response?.assets &&
-                    response?.assets.map(({uri}) => (
-                      <View key={uri} style={styles.ResponseImage}>
-                        <Image
-                          resizeMode="cover"
-                          resizeMethod="scale"
-                          style={{width: 200, height: 200}}
-                          source={{uri: uri}}
-                        />
-                      </View>
-                    ))}
+                    response?.assets.map(
+                      ({uri}) => (
+                        console.log(response),
+                        (
+                          <View key={uri} style={styles.ResponseImage}>
+                            <Image
+                              resizeMode="cover"
+                              resizeMethod="scale"
+                              style={{width: 300, height: 200}}
+                              source={{uri: uri}}
+                            />
+                          </View>
+                        )
+                      ),
+                    )}
 
                   {uploadSuccess ? (
                     <View style={styles.UploadSuccessContainer}>
