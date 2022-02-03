@@ -19,6 +19,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
@@ -248,12 +249,51 @@ const HomeScreen = ({locationEnabled}) => {
 };
 
 const LoginScreen = ({navigation}) => {
-  const [ID, setID] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [account, setAccount] = useState({
+    id: '',
+    password: '',
+  });
 
-  const handleLogin = () => {
-    setLoading(true);
+  const handleAccount = (key, value) => {
+    setAccount({
+      ...account,
+      [key]: value,
+    });
+  };
+
+  const setToken = async token => {
+    const idStorage = ['@id', account.id];
+    const tokenStorage = ['@token', token];
+    try {
+      await AsyncStorage.clear();
+      await AsyncStorage.multiSet([idStorage, tokenStorage]);
+      console.log('Token setting');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLoginBtn = async () => {
+    await axios
+      .post(
+        'http://3.19.6.82:8080/app/login',
+        {id: account.id, password: account.password},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        alert(response.data.message);
+        setAccount({id: '', password: ''});
+        response.data.status === 'success'
+          ? (setToken(response.data.token), navigation.navigate('Home'))
+          : {};
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -272,7 +312,9 @@ const LoginScreen = ({navigation}) => {
           <TextInput
             style={styles.TextInput}
             placeholder="Enter your ID"
-            onChangeText={id => setID(id)}
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={id => handleAccount('id', id)}
             placeholderTextColor="#282828"
           />
         </View>
@@ -283,7 +325,10 @@ const LoginScreen = ({navigation}) => {
             placeholder="
             Enter your Password"
             secureTextEntry={true}
-            onChangeText={password => setPassword(password)}
+            textContentType="none"
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={password => handleAccount('password', password)}
             placeholderTextColor="#282828"
           />
         </View>
@@ -293,7 +338,7 @@ const LoginScreen = ({navigation}) => {
             onPress={() => navigation.navigate('Signup')}>
             <Text style={styles.loginText}>SIGNUP</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.loginBtn}>
+          <TouchableOpacity style={styles.loginBtn} onPress={handleLoginBtn}>
             <Text style={styles.loginText}>LOGIN</Text>
           </TouchableOpacity>
         </View>
