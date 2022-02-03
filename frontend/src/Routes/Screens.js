@@ -18,6 +18,7 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import axios from 'axios';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
@@ -76,12 +77,12 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 45,
     marginBottom: 20,
-    alignItems: 'center',
   },
   TextInput: {
     height: 50,
     flex: 1,
     padding: 10,
+    textAlign: 'center',
   },
   loginBtn: {
     minWidth: '38.5%',
@@ -247,7 +248,7 @@ const HomeScreen = ({locationEnabled}) => {
 };
 
 const LoginScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
+  const [ID, setID] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -270,8 +271,8 @@ const LoginScreen = ({navigation}) => {
         <View style={styles.inputView}>
           <TextInput
             style={styles.TextInput}
-            placeholder="Enter your E-mail"
-            onChangeText={email => setEmail(email)}
+            placeholder="Enter your ID"
+            onChangeText={id => setID(id)}
             placeholderTextColor="#282828"
           />
         </View>
@@ -304,6 +305,7 @@ const LoginScreen = ({navigation}) => {
   );
 };
 
+// todo : 업로드할 때 건물 이름, 층 수, uuid
 const BlueprintScreen = () => {
   const [response, setResponse] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -503,15 +505,45 @@ const BlueprintScreen = () => {
 };
 
 const SignupScreen = ({navigation}) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
+  const [account, setAccount] = useState({
+    name: '',
+    id: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  const [loading, setLoading] = useState(false);
+  const handleAccount = (key, value) => {
+    setAccount({
+      ...account,
+      [key]: value,
+    });
+  };
 
-  const handleSignup = () => {
-    setLoading(true);
+  const handleSignupBtn = async () => {
+    await axios
+      .post(
+        'http://3.19.6.82:8080/app/join',
+        {
+          id: account.name,
+          password: account.password,
+          password2: account.confirmPassword,
+          name: account.name,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        alert(response.data.message);
+        setAccount({name: '', id: '', password: '', confirmPassword: ''});
+        response.data.status === 'success' ? navigation.navigate('Login') : {};
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -528,41 +560,57 @@ const SignupScreen = ({navigation}) => {
         </View>
         <View style={styles.inputView}>
           <TextInput
+            name="name"
             style={styles.TextInput}
             placeholder="Enter your Name"
-            onChangeText={name => setName(name)}
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={name => handleAccount('name', name)}
             placeholderTextColor="#282828"
           />
         </View>
         <View style={styles.inputView}>
           <TextInput
+            name="id"
             style={styles.TextInput}
-            placeholder="Enter your E-mail"
-            onChangeText={email => setEmail(email)}
+            placeholder="Enter your ID"
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={id => handleAccount('id', id)}
             placeholderTextColor="#282828"
           />
         </View>
         <View style={styles.inputView}>
           <TextInput
+            name="password"
             style={styles.TextInput}
             placeholder="
             Enter your Password"
             secureTextEntry={true}
-            onChangeText={password => setPassword(password)}
+            textContentType="none"
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={password => handleAccount('password', password)}
             placeholderTextColor="#282828"
           />
         </View>
         <View style={styles.inputView}>
           <TextInput
+            name="confirmPassword"
             style={styles.TextInput}
             placeholder="
-            Re-enter your Password"
+            Confirm your Password"
             secureTextEntry={true}
-            onChangeText={password2 => setPassword2(password2)}
+            textContentType="none"
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={confirmPassword =>
+              handleAccount('confirmPassword', confirmPassword)
+            }
             placeholderTextColor="#282828"
           />
         </View>
-        <TouchableOpacity style={styles.registerBtn}>
+        <TouchableOpacity style={styles.registerBtn} onPress={handleSignupBtn}>
           <Text style={styles.loginText}>REGISTER</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
