@@ -21,7 +21,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
-import Beacon from '../Components/Beacons.ios.js';
+import Beacon from '../Components/Beacon/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
@@ -416,7 +416,7 @@ const BlueprintScreen = () => {
                     size={30}
                     style={{marginRight: 20}}
                   />
-                  <ListItem.Content>
+                  <ListItem.Content key={item.title}>
                     <ListItem.Title>{item.title}</ListItem.Title>
                   </ListItem.Content>
                 </>
