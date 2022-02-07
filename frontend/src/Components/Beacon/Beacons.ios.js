@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, NativeEventEmitter} from 'react-native';
 
 import Kontakt, {KontaktModule} from 'react-native-kontaktio';
+import {regionSample, GetUuid} from './GetUuid';
 
 const {
   init,
@@ -14,11 +15,7 @@ const {
 } = Kontakt;
 
 const kontaktEmitter = new NativeEventEmitter(KontaktModule);
-const region1 = {
-  identifier: 'Test beacons 1',
-  uuid: '74278BDA-B644-4520-8F0C-720EAF059935',
-  //   major: 1,
-};
+const region1 = regionSample;
 
 // const region2 = {
 //   identifier: 'Test beacons 2',
