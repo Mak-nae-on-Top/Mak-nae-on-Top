@@ -613,7 +613,7 @@ const SignupScreen = ({navigation}) => {
         <TouchableOpacity style={styles.registerBtn} onPress={handleSignupBtn}>
           <Text style={styles.loginText}>REGISTER</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text>Already have an account?</Text>
         </TouchableOpacity>
       </View>
