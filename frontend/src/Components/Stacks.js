@@ -44,19 +44,19 @@ const HomeStack = ({locationEnabled, props}) => {
       }}>
       <Stack.Screen
         name="HomeScreen"
-        component={() => <HomeScreen locationEnabled={locationEnabled} />}
         options={{
           title: ' ',
           headerLeft: () => (
             <HamburgerIcon navigationProps={props.navigation} />
           ),
-        }}
-      />
+        }}>
+        {props => <HomeScreen {...props} locationEnabled={locationEnabled} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
 
-const LoginStack = ({navigation}) => {
+const AuthStack = ({navigation}) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -66,11 +66,18 @@ const LoginStack = ({navigation}) => {
       }}>
       <Stack.Screen
         name="LoginScreen"
-        component={LoginScreen}
         options={{
           title: ' ',
-        }}
-      />
+        }}>
+        {props => <LoginScreen {...props} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="SignupScreen"
+        options={{
+          title: ' ',
+        }}>
+        {props => <SignupScreen {...props} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -85,32 +92,13 @@ const BlueprintStack = ({navigation}) => {
       }}>
       <Stack.Screen
         name="BlueprintScreen"
-        component={BlueprintScreen}
         options={{
           title: ' ',
-        }}
-      />
+        }}>
+        {props => <BlueprintScreen {...props} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
 
-const SignupStack = ({navigation}) => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: true,
-        headerTransparent: true,
-        headerLeft: () => <HamburgerIcon navigationProps={navigation} />,
-      }}>
-      <Stack.Screen
-        name="SignupScreen"
-        component={SignupScreen}
-        options={{
-          title: ' ',
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
-
-export {HomeStack, LoginStack, BlueprintStack, SignupStack};
+export {HomeStack, AuthStack, BlueprintStack};

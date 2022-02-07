@@ -8,7 +8,7 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 
-import {HomeStack, LoginStack, BlueprintStack, SignupStack} from './Stacks';
+import {HomeStack, AuthStack, BlueprintStack} from './Stacks';
 
 const styles = StyleSheet.create({
   sideBarSection: {
@@ -93,6 +93,56 @@ const CustomSidebar = props => {
 const Drawer = createDrawerNavigator();
 
 const SideBar = () => {
+  const CustomDrawerContents = props => {
+    return (
+      <DrawerContentScrollView {...props}>
+        <CustomSidebar {...props} />
+        {state.userToken == null ? (
+          <DrawerItem
+            // label={({color}) => <Text style={{color}}>🔓 Logout</Text>}
+            label="🔓 Logout"
+            labelStyle={{color: '#454545'}}
+            // todo : logout
+          />
+        ) : (
+          <></>
+        )}
+        <View style={styles.sideBarSection}>
+          <Text key="Information" style={{marginLeft: 10}}>
+            Information
+          </Text>
+          <View style={styles.sectionSeparator} />
+        </View>
+
+        <View style={styles.item}>
+          <Text style={styles.locationLabel}>📍 Share my location info</Text>
+          <View style={styles.switchContainer}>
+            <Switch
+              trackColor={{false: '#767577', true: '#d3e3d6'}}
+              thumbColor={locationEnabled ? '#4dff73' : '#f4f3f4'}
+              ios_backgroundColor="#d3e3d6"
+              onValueChange={toggleLocationSwitch}
+              value={locationEnabled}
+            />
+          </View>
+        </View>
+
+        <View style={styles.item}>
+          <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
+          <View style={styles.switchContainer}>
+            <Switch
+              trackColor={{false: '#767577', true: '#d3e3d6'}}
+              thumbColor={alarmEnabled ? 'red' : '#f4f3f4'}
+              ios_backgroundColor="#d3e3d6"
+              onValueChange={toggleAlarmSwitch}
+              value={alarmEnabled}
+            />
+          </View>
+        </View>
+      </DrawerContentScrollView>
+    );
+  };
+
   const [locationEnabled, setLocationEnabled] = useState(false);
   const [alarmEnabled, setAlarmEnabled] = useState(false);
   const toggleLocationSwitch = () => {
@@ -107,57 +157,7 @@ const SideBar = () => {
         screenOptions={{
           headerShown: false,
         }}
-        drawerContent={props => {
-          const filteredProps = {
-            ...props,
-            state: {
-              ...props.state,
-              routes: props.state.routes.filter(
-                route => route.name !== 'Signup',
-              ),
-            },
-          };
-          return (
-            <DrawerContentScrollView {...filteredProps}>
-              <CustomSidebar {...filteredProps} />
-
-              <View style={styles.sideBarSection}>
-                <Text key="Information" style={{marginLeft: 10}}>
-                  Information
-                </Text>
-                <View style={styles.sectionSeparator} />
-              </View>
-
-              <View style={styles.item}>
-                <Text style={styles.locationLabel}>
-                  📍 Share my location info
-                </Text>
-                <View style={styles.switchContainer}>
-                  <Switch
-                    trackColor={{false: '#767577', true: '#d3e3d6'}}
-                    thumbColor={locationEnabled ? '#4dff73' : '#f4f3f4'}
-                    ios_backgroundColor="#d3e3d6"
-                    onValueChange={toggleLocationSwitch}
-                    value={locationEnabled}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.item}>
-                <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
-                <View style={styles.switchContainer}>
-                  <Switch
-                    trackColor={{false: '#767577', true: '#d3e3d6'}}
-                    thumbColor={alarmEnabled ? 'red' : '#f4f3f4'}
-                    ios_backgroundColor="#d3e3d6"
-                    onValueChange={toggleAlarmSwitch}
-                    value={alarmEnabled}
-                  />
-                </View>
-              </View>
-            </DrawerContentScrollView>
-          );
-        }}>
+        drawerContent={props => CustomDrawerContents(props)}>
         <Drawer.Screen
           name="Home"
           options={{
@@ -178,7 +178,7 @@ const SideBar = () => {
             groupName: 'Manage',
             activeTintColor: '#282828',
           }}
-          component={LoginStack}
+          component={AuthStack}
         />
 
         <Drawer.Screen
@@ -189,12 +189,6 @@ const SideBar = () => {
             activeTintColor: '#282828',
           }}
           component={BlueprintStack}
-        />
-
-        <Drawer.Screen
-          name="Signup"
-          options={{drawerLabel: 'Signup'}}
-          component={SignupStack}
         />
       </Drawer.Navigator>
     </NavigationContainer>
