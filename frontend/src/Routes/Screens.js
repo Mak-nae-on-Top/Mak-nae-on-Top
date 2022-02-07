@@ -18,6 +18,7 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import NumericInput from 'react-native-numeric-input';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
@@ -123,6 +124,12 @@ const styles = StyleSheet.create({
   UploadSuccessContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inputInfoView: {
+    backgroundColor: '#D4D4D4',
+    borderRadius: 30,
+    height: 35,
+    marginBottom: 10,
   },
 });
 
@@ -321,6 +328,18 @@ const LoginScreen = ({navigation}) => {
 
 // todo : 업로드할 때 건물 이름, 층 수, uuid
 const BlueprintScreen = () => {
+  const [info, setInfo] = React.useState({
+    floor: null,
+    uuid: '',
+  });
+
+  const handleInfo = (key, value) => {
+    setInfo({
+      ...info,
+      [key]: value,
+    });
+  };
+
   const [response, setResponse] = React.useState(null);
   const [uploadSuccess, setUploadSuccess] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState();
@@ -395,6 +414,10 @@ const BlueprintScreen = () => {
     } else {
       setUploadSuccess(false);
       setResponse(null);
+      setInfo({
+        floor: null,
+        uuid: '',
+      });
     }
   }, []);
 
@@ -477,8 +500,35 @@ const BlueprintScreen = () => {
                   )}
 
                   {/* Upload Btn & Delete Btn */}
-                  {response ? (
-                    !response.didCancel ? (
+                  {response && !response.didCancel && (
+                    <>
+                      <View style={[styles.row, {justifyContent: 'center'}]}>
+                        <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+                          Select your blueprint's floor and type beacon uuid
+                        </Text>
+                        <NumericInput
+                          value={info.floor}
+                          onChange={value => handleInfo('floor', value)}
+                          totalWidth={120}
+                          totalHeight={35}
+                          rounded
+                          iconStyle={{color: 'white'}}
+                          rightButtonBackgroundColor="#4f4f4f"
+                          leftButtonBackgroundColor="#a3a3a3"
+                        />
+                        <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                          <TextInput
+                            name="uuid"
+                            key="uuid"
+                            style={[styles.TextInput, {width: 200}]}
+                            placeholder="Type beacon's uuid"
+                            autoCorrect={false}
+                            clearButtonMode="always"
+                            onChangeText={value => handleInfo('uuid', value)}
+                            placeholderTextColor="#282828"
+                          />
+                        </View>
+                      </View>
                       <View style={styles.uploadBtnContainer}>
                         {actions2.map(({title, type}) => {
                           return (
@@ -490,11 +540,7 @@ const BlueprintScreen = () => {
                           );
                         })}
                       </View>
-                    ) : (
-                      []
-                    )
-                  ) : (
-                    []
+                    </>
                   )}
                 </>
               )}
