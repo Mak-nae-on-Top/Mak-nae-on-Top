@@ -60,3 +60,6 @@ buck-out/
 /ios/Pods/
 /ios/Podfile.lock
 /ios/frontend.xcworkspace
+
+# Server URL
+/src/ServerURL/url.js
