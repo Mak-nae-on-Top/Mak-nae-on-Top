@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import * as React from 'react';
 import {
   StyleSheet,
   View,
@@ -18,13 +18,13 @@ import SlidingUpPanel from 'rn-sliding-up-panel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import axios from 'axios';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
 import Beacon from '../Components/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
+import {AuthContext} from '../Components/SideBar';
 
 const styles = StyleSheet.create({
   MainContainer: {
@@ -127,12 +127,13 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = ({locationEnabled}) => {
+  // panel contents
   const windowHeight = Dimensions.get('window').height;
   const defaultProps = {
     draggableRange: {top: windowHeight - 100, bottom: 0},
   };
   const {top, bottom} = defaultProps.draggableRange;
-  const [draggedValue] = useState(() => new Animated.Value(0));
+  const [draggedValue] = React.useState(() => new Animated.Value(0));
 
   const closePanel = () => {
     draggedValue.setValue(0);
@@ -157,7 +158,7 @@ const HomeScreen = ({locationEnabled}) => {
   };
 
   const PanelContent = () => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = React.useState('');
 
     const onChangeSearch = query => setSearchQuery(query);
     return (
@@ -248,12 +249,18 @@ const HomeScreen = ({locationEnabled}) => {
 };
 
 const LoginScreen = ({navigation}) => {
-  const [ID, setID] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const {login} = React.useContext(AuthContext);
 
-  const handleLogin = () => {
-    setLoading(true);
+  const [account, setAccount] = React.useState({
+    id: '',
+    password: '',
+  });
+
+  const handleAccount = (key, value) => {
+    setAccount({
+      ...account,
+      [key]: value,
+    });
   };
 
   return (
@@ -272,7 +279,9 @@ const LoginScreen = ({navigation}) => {
           <TextInput
             style={styles.TextInput}
             placeholder="Enter your ID"
-            onChangeText={id => setID(id)}
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={id => handleAccount('id', id)}
             placeholderTextColor="#282828"
           />
         </View>
@@ -283,17 +292,22 @@ const LoginScreen = ({navigation}) => {
             placeholder="
             Enter your Password"
             secureTextEntry={true}
-            onChangeText={password => setPassword(password)}
+            textContentType="none"
+            autoCorrect={false}
+            clearButtonMode="always"
+            onChangeText={password => handleAccount('password', password)}
             placeholderTextColor="#282828"
           />
         </View>
         <View style={styles.row}>
           <TouchableOpacity
             style={styles.loginBtn}
-            onPress={() => navigation.navigate('Signup')}>
+            onPress={() => navigation.navigate('SignupScreen')}>
             <Text style={styles.loginText}>SIGNUP</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.loginBtn}>
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={() => login(account)}>
             <Text style={styles.loginText}>LOGIN</Text>
           </TouchableOpacity>
         </View>
@@ -307,9 +321,9 @@ const LoginScreen = ({navigation}) => {
 
 // todo : 업로드할 때 건물 이름, 층 수, uuid
 const BlueprintScreen = () => {
-  const [response, setResponse] = useState(null);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [activeIndex, setActiveIndex] = useState();
+  const [response, setResponse] = React.useState(null);
+  const [uploadSuccess, setUploadSuccess] = React.useState(false);
+  const [activeIndex, setActiveIndex] = React.useState();
 
   const includeExtra = true;
 
@@ -364,7 +378,7 @@ const BlueprintScreen = () => {
     },
   ];
 
-  const handleGetBlueprintBtn = useCallback((type, options) => {
+  const handleGetBlueprintBtn = React.useCallback((type, options) => {
     if (type === 'capture') {
       launchCamera(options, setResponse);
     } else {
@@ -372,7 +386,7 @@ const BlueprintScreen = () => {
     }
   }, []);
 
-  const handleChosenBlueprintBtn = useCallback(type => {
+  const handleChosenBlueprintBtn = React.useCallback(type => {
     if (type === 'upload') {
       // todo : image upload to database
 
@@ -505,7 +519,8 @@ const BlueprintScreen = () => {
 };
 
 const SignupScreen = ({navigation}) => {
-  const [account, setAccount] = useState({
+  const {signup} = React.useContext(AuthContext);
+  const [account, setAccount] = React.useState({
     name: '',
     id: '',
     password: '',
@@ -517,33 +532,6 @@ const SignupScreen = ({navigation}) => {
       ...account,
       [key]: value,
     });
-  };
-
-  const handleSignupBtn = async () => {
-    await axios
-      .post(
-        'http://3.19.6.82:8080/app/join',
-        {
-          id: account.name,
-          password: account.password,
-          password2: account.confirmPassword,
-          name: account.name,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .then(response => {
-        alert(response.data.message);
-        setAccount({name: '', id: '', password: '', confirmPassword: ''});
-        response.data.status === 'success' ? navigation.navigate('Login') : {};
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
   };
 
   return (
@@ -610,7 +598,11 @@ const SignupScreen = ({navigation}) => {
             placeholderTextColor="#282828"
           />
         </View>
-        <TouchableOpacity style={styles.registerBtn} onPress={handleSignupBtn}>
+        <TouchableOpacity
+          style={styles.registerBtn}
+          onPress={() =>
+            signup(account) ? navigation.navigate('LoginScreen') : {}
+          }>
           <Text style={styles.loginText}>REGISTER</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.goBack()}>
