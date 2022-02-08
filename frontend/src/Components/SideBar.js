@@ -11,6 +11,7 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 import {HomeStack, AuthStack, BlueprintStack} from './Stacks';
+
 import url from '../ServerURL/url';
 
 export const AuthContext = React.createContext();
@@ -104,6 +105,7 @@ const SideBar = () => {
   //status about alarm & location
   const [locationEnabled, setLocationEnabled] = React.useState(false);
   const [alarmEnabled, setAlarmEnabled] = React.useState(false);
+
   const toggleLocationSwitch = () => {
     setLocationEnabled(previousState => !previousState);
   };
