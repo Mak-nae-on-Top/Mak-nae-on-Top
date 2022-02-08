@@ -286,9 +286,6 @@ const SideBar = () => {
           <Text style={styles.locationLabel}>📍 Share my location info</Text>
           <View style={styles.switchContainer}>
             <Switch
-              trackColor={{false: '#767577', true: '#d3e3d6'}}
-              thumbColor={locationEnabled ? '#4dff73' : '#f4f3f4'}
-              ios_backgroundColor="#d3e3d6"
               onValueChange={toggleLocationSwitch}
               value={locationEnabled}
             />
@@ -299,9 +296,7 @@ const SideBar = () => {
           <Text style={styles.fireLabel}>🚨 Get fire alarm</Text>
           <View style={styles.switchContainer}>
             <Switch
-              trackColor={{false: '#767577', true: '#d3e3d6'}}
-              thumbColor={alarmEnabled ? 'red' : '#f4f3f4'}
-              ios_backgroundColor="#d3e3d6"
+              trackColor={{true: 'red'}}
               onValueChange={toggleAlarmSwitch}
               value={alarmEnabled}
             />
