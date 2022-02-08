@@ -313,7 +313,7 @@ const SideBar = () => {
 
   return (
     <NavigationContainer>
-      <AuthContext.Provider value={authContext}>
+      <AuthContext.Provider value={{authContext: authContext, state: state}}>
         <Drawer.Navigator
           screenOptions={{
             headerShown: false,
