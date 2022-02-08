@@ -114,8 +114,8 @@ real-time analysis A\* algorithm
 | Name                                                                                                | Country           | Where to find you                       | Role      |
 | --------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------- | --------- |
 | Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" /> | Republic Of Korea | [Github](https://github.com/gnoes)      | Paper     |
-| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />     | Republic Of Korea | [Github](https://github.com/gitnamu)    | Back End  |
-| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rjsduf0503) | Front End |
+| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />     | Republic Of Korea | [Github](https://github.com/gitnamu)    | Backend  |
+| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rjsduf0503) | Frontend |
 | Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rmfosem613) | IoT       |
 | Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />    | Republic Of Korea | [Github](https://github.com/tjsalstn33) | Algorithm |
 
