@@ -43,7 +43,7 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 
 > Application structure
 
-image
+<p align="center">image</p>
 
 <br>
 
@@ -67,47 +67,52 @@ image
 
 real-time analysis A\* algorithm
 
-1. What is A\* algorithm
-   - <기능>
-   - description
-2. How to use
-   - <기능>
-   - description
-3. Formula
-   - <기능>
-   - description
+> #### 1. What is A\* algorithm
+
+<p align="center">image</p>
+    description
+
+> #### 2. How to use
+
+    function
+    description
+
+> #### 3. Formula
+
+    function
+    description
 
 <br>
 
 # Server
 
-1. What to use
+> #### 1. What to use
 
-   <기능>
+<p align="center">image</p>
 
-   description
+    description
 
-2. Trilaterration
+> #### 2. Trilaterration
 
-   <기능>
+    function
 
-   description
+    description
 
 <br>
 
 # IoT
 
-1. Beacon
+> #### 1. Beacon
 
-   image
+<p align="center">image</p>
 
-> description
+    description
 
-2. Fire detector
+> #### 2. Fire detector
 
-   image
+<p align="center">image</p>
 
-> description
+    description
 
 <br>
 
