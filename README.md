@@ -2,137 +2,72 @@
 
 2022 Winter Purdue Program
 
-<p align="center">
-  <img src="https://img.shields.io/badge/npm-^8.3.1-blue" />
-  <img src="https://img.shields.io/github/contributors/2021SiliconValleyOnlineInternshipTeam-J/AutomaticFruitCounter" />
-  <img src="https://img.shields.io/github/last-commit/2021SiliconValleyOnlineInternshipTeam-J/AutomaticFruitCounter?color=red" />
-  <img src="https://img.shields.io/github/commit-activity/w/2021SiliconValleyOnlineInternshipTeam-J/AutomaticFruitCounter?color=red" />
-</p>
+## Introduction
 
-<br>
+##### Development of an optimization route guide application for indoor fire evacuation using beacons
 
-## Table of Contents
+1. **Introduction**
 
-- [Introduction](#Introduction)
-- [Architecture](#Architecture)
-- [Application](#Application)
-  1. Sidebar
-  2. Beacon
-  3. Blueprint
-- [Algorithm](#Algorithm)
-- [Server](#Server)
-- [IoT(Arduino)](#IoT)
-  1. Beacon
-  2. Fire detector
-- [Contributors](#Contributors)
-- [Framework](#Framework)
+   Still, damage to fire accidents continues to occur. According to the U.S. Fire Administration, the average number of fire accidents from 2010 to 2019 was 1,300,000.
+   In detail, in 2019, 40.4% were externally occurring fires, 29.9% in residential spaces, 15.1% in vehicles, 9.4% in non-residential spaces, and 5.2% in other areas, and 39.3% of fires in buildings can be confirmed.
+   In order to prevent accidents involving indoor fires, this study was conducted by developing an app that informs the optimal route for indoor fire evacuation by using beacons.
 
-<br>
+2. **Literature review**
 
-# Introduction
+   > Accuracy Study of Indoor Positioning with Bluetooth Low Energy Beacons, 2020​
 
-> Development of an optimization route guide application for indoor fire evacuation using beacons
+   The average multiple measurements can increase the accuracy of indoor positioning.​
 
-Still, damage to fire accidents continues to occur. According to the U.S. Fire Administration, the average number of fire accidents from 2010 to 2019 was 1,300,000.
-In detail, in 2019, 40.4% were externally occurring fires, 29.9% in residential spaces, 15.1% in vehicles, 9.4% in non-residential spaces, and 5.2% in other areas, and 39.3% of fires in buildings can be confirmed.
-In order to prevent accidents involving indoor fires, this study was conducted by developing an app that informs the optimal route for indoor fire evacuation by using beacons.
+   > Evacuation Guidance System Using Beacon Information and ​Dijkstra’s Algorithm, 2021
 
-<br>
+   The average multiple measurements can increase the accuracy of indoor positioning.​
 
-# Structure
+3. **Methodology**
 
-> Application structure
+   1. Application structure
 
-image
+   - When the manager uploads a blueprint for each floor, the application converts it to a map, and the administrator enters the name of each room Using Bluetooth beacon, the user’s location data is obtained. In peacetime, the application shows an optimized route to the destination that the user wants. In the event of a fire, a fire alarm that is linked to the server notifies the server of the occurrence of the fire, and the server notifies the user of the fire through the application. The application displays the current population cluster and the fastest escape route from the current user location on the map.
 
-<br>
+   2. Image scanning
 
-# Application
+   3. Location measurement
 
-> #### 1. Sidebar
+   4. Route recommendation
 
-    description
+4. **Implementation**
 
-> #### 2. Beacon
+   1. Develop process
 
-    description
+   2. Prototype
 
-> #### 3. Blueprint
+   3. Server working flow
 
-    description
+   4. Application
 
-<br>
+5. **Conclusiong**
 
-# Algorithm
+   We are going to...
 
-real-time analysis A\* algorithm
+6. **Reference**
 
-1. What is A\* algorithm
+   1.
+   2.
+
+## Development environment
+
+Application, Server, Algorithm, IoT
+
+1. Application
    - <기능>
-   - description
-2. How to use
+   - 설명
+2. Server
    - <기능>
-   - description
-3. Formula
+   - 설명
+3. Algorithm
    - <기능>
-   - description
+   - 설명
+4. IoT
+   - <기능>
+   - 설명
 
-<br>
-
-# Server
-
-1. What to use
-
-   <기능>
-
-   description
-
-2. Trilaterration
-
-   <기능>
-
-   description
-
-<br>
-
-# IoT
-
-1. Beacon
-
-   image
-
-> description
-
-2. Fire detector
-
-   image
-
-> description
-
-<br>
-
-# Contributors
-
-| Name                                                                                                | Country           | Where to find you                       | Role      |
-| --------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------- | --------- |
-| Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" /> | Republic Of Korea | [Github](https://github.com/gnoes)      | Paper     |
-| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />     | Republic Of Korea | [Github](https://github.com/gitnamu)    | Back End  |
-| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rjsduf0503) | Front End |
-| Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rmfosem613) | IoT       |
-| Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />    | Republic Of Korea | [Github](https://github.com/tjsalstn33) | Algorithm |
-
-<br>
-
-# Framework
-
-<br>
-
-# LICENSE
-
-    Copyright © (Mac-nae-on-top)
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+## License
