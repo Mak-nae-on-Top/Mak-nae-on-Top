@@ -19,6 +19,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NumericInput from 'react-native-numeric-input';
+import axios from 'axios';
 
 import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
@@ -26,6 +27,7 @@ import Beacon from '../Components/Beacon/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
+import url from '../ServerURL/url';
 
 const styles = StyleSheet.create({
   MainContainer: {
@@ -256,7 +258,7 @@ const HomeScreen = ({locationEnabled}) => {
 };
 
 const LoginScreen = ({navigation}) => {
-  const {login} = React.useContext(AuthContext);
+  const {authContext, state} = React.useContext(AuthContext);
 
   const [account, setAccount] = React.useState({
     id: '',
@@ -314,7 +316,7 @@ const LoginScreen = ({navigation}) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.loginBtn}
-            onPress={() => login(account)}>
+            onPress={() => authContext.login(account)}>
             <Text style={styles.loginText}>LOGIN</Text>
           </TouchableOpacity>
         </View>
@@ -328,6 +330,8 @@ const LoginScreen = ({navigation}) => {
 
 // todo : 업로드할 때 건물 이름, 층 수, uuid
 const BlueprintScreen = () => {
+  const {authContext, state} = React.useContext(AuthContext);
+
   const [info, setInfo] = React.useState({
     floor: null,
     uuid: '',
@@ -376,8 +380,8 @@ const BlueprintScreen = () => {
       title: 'Select Blueprint',
       type: 'library',
       options: {
-        maxHeight: 200,
-        maxWidth: 300,
+        // maxHeight: 200,
+        // maxWidth: 300,
         selectionLimit: 0,
         mediaType: 'photo',
         includeBase64: false,
@@ -397,6 +401,34 @@ const BlueprintScreen = () => {
     },
   ];
 
+  const uploadBlueprint = async () => {
+    await axios
+      .post(
+        url + 'app/saveMap',
+        {
+          token: state.userToken,
+          image: response,
+          uuid: info.uuid,
+          floor: info.floor,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+      .then(async response => {
+        alert(response.data.message);
+        if (response.data.status === 'success') {
+          return true;
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    return false;
+  };
+
   const handleGetBlueprintBtn = React.useCallback((type, options) => {
     if (type === 'capture') {
       launchCamera(options, setResponse);
@@ -408,9 +440,10 @@ const BlueprintScreen = () => {
   const handleChosenBlueprintBtn = React.useCallback(type => {
     if (type === 'upload') {
       // todo : image upload to database
-
-      setUploadSuccess(true);
-      setResponse(null);
+      if (uploadBlueprint()) {
+        setUploadSuccess(true);
+        setResponse(null);
+      }
     } else {
       setUploadSuccess(false);
       setResponse(null);
@@ -473,9 +506,8 @@ const BlueprintScreen = () => {
                         (
                           <View key={uri} style={styles.ResponseImage}>
                             <Image
-                              resizeMode="cover"
-                              resizeMethod="scale"
-                              style={{width: 300, height: 200}}
+                              resizeMode="contain"
+                              style={{width: 300, height: 300}}
                               source={{uri: uri}}
                             />
                           </View>
@@ -565,7 +597,7 @@ const BlueprintScreen = () => {
 };
 
 const SignupScreen = ({navigation}) => {
-  const {signup} = React.useContext(AuthContext);
+  const {authContext, state} = React.useContext(AuthContext);
   const [account, setAccount] = React.useState({
     name: '',
     id: '',
@@ -647,7 +679,9 @@ const SignupScreen = ({navigation}) => {
         <TouchableOpacity
           style={styles.registerBtn}
           onPress={() =>
-            signup(account) ? navigation.navigate('LoginScreen') : {}
+            authContext.signup(account)
+              ? navigation.navigate('LoginScreen')
+              : {}
           }>
           <Text style={styles.loginText}>REGISTER</Text>
         </TouchableOpacity>
