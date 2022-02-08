@@ -2,13 +2,6 @@
 
 2022 Winter Purdue Program
 
-<p align="center">
-  <img src="https://img.shields.io/badge/npm-^8.3.1-blue" />
-  <img src="https://img.shields.io/github/contributors/Mak-nae-on-Top/AutomaticFruitCounter" />
-  <img src="https://img.shields.io/github/last-commit/Mak-nae-on-Top/AutomaticFruitCounter?color=red" />
-  <img src="https://img.shields.io/github/commit-activity/w/Mak-nae-on-Top/AutomaticFruitCounter?color=red" />
-</p>
-
 <br>
 
 ## Table of Contents
