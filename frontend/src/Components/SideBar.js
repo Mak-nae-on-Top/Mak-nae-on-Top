@@ -263,12 +263,6 @@ const SideBar = () => {
         <CustomSidebar {...props} />
         {state.userToken != null ? (
           <>
-            <View style={styles.sideBarSection}>
-              <Text key="Manage" style={{marginLeft: 10}}>
-                Manage
-              </Text>
-              <View style={styles.sectionSeparator} />
-            </View>
             <DrawerItem
               label={() => (
                 <Text style={{color: '#666666', fontWeight: 'normal'}}>
@@ -349,7 +343,9 @@ const SideBar = () => {
                 }}
                 component={AuthStack}
               />
-
+            </>
+          ) : (
+            <>
               <Drawer.Screen
                 name="Blueprint"
                 options={{
@@ -360,8 +356,6 @@ const SideBar = () => {
                 component={BlueprintStack}
               />
             </>
-          ) : (
-            <></>
           )}
         </Drawer.Navigator>
       </AuthContext.Provider>
