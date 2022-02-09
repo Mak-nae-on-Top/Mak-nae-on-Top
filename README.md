@@ -11,7 +11,7 @@ Development of an optimization route guide application for indoor fire evacuatio
 [🍌Structure](#Structure)
 
 [🎙️Application](#Application)
-  - Setup
+    - Setup
     - Implementation
 - [🍚Algorithm](#Algorithm)
   - A\* algorithm
