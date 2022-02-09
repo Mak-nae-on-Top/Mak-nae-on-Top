@@ -17,7 +17,7 @@ Development of an optimization route guide application for indoor fire evacuatio
 - [🌳Server](#Server)
   - Setup
   - Trilaterration
-- [📸IoT(Arduino)](#IoT)
+- [📹IoT(Arduino)](#IoT)
   - Beacon
   - Fire detector
 - [📌Contributors](#Contributors)
@@ -125,7 +125,7 @@ real-time analysis A\* algorithm
 <br>
 <br>
 
-# 📸IoT
+# 📹IoT
 
 > #### 1. Beacon
 
