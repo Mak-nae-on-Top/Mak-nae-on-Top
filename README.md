@@ -58,11 +58,11 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 
 # Application
 
-> ### 1. Setup
+> #### 1. Setup
 
     사용한 툴과 코드 실행 방법
 
-> ### 2. Implementation
+> #### 2. Implementation
 
 <br>
 
