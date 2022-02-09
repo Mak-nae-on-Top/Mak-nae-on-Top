@@ -1,4 +1,4 @@
-# Mak-nae-on-Top
+# ♚Mak-nae-on-Top
 
 Development of an optimization route guide application for indoor fire evacuation using beacons
 
@@ -6,25 +6,25 @@ Development of an optimization route guide application for indoor fire evacuatio
 
 ## Table of Contents
 
-- [Introduction](#Introduction)
-- [Structure](#Structure)
-- [Application](#Application)
-  - 💡 Setup
+- [📝Introduction](#Introduction)
+- [🍌Structure](#Structure)
+- [🎙️Application](#Application)
+  - Setup
   - Implementation
-- [Algorithm](#Algorithm)
+- [🍚Algorithm](#Algorithm)
   - A\* algorithm
-  - 💡Setup
-- [Server](#Server)
-  - 💡Setup
+  - Setup
+- [🌳Server](#Server)
+  - Setup
   - Trilaterration
-- [IoT(Arduino)](#IoT)
+- [📸IoT(Arduino)](#IoT)
   - Beacon
   - Fire detector
 - [📌Contributors](#Contributors)
 
 <br>
 
-# Introduction
+# 📝Introduction
 
 Still, damage to fire accidents continues to occur. According to the U.S. Fire Administration, the average number of fire accidents from 2010 to 2019 was 1,300,000.
 In detail, in 2019, 40.4% were externally occurring fires, 29.9% in residential spaces, 15.1% in vehicles, 9.4% in non-residential spaces, and 5.2% in other areas, and 39.3% of fires in buildings can be confirmed.
@@ -47,7 +47,7 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 <br>
 <br>
 
-# Structure
+# 🍌Structure
 
 > Application structure
 
@@ -56,7 +56,7 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 <br>
 <br>
 
-# Application
+# 🎙️Application
 
 > #### 1. Setup
 
@@ -91,7 +91,7 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 <br>
 <br>
 
-# Algorithm
+# 🍚Algorithm
 
 real-time analysis A\* algorithm
 
@@ -110,7 +110,7 @@ real-time analysis A\* algorithm
 <br>
 <br>
 
-# Server
+# 🌳Server
 
 > #### 1. Setup
 
@@ -125,7 +125,7 @@ real-time analysis A\* algorithm
 <br>
 <br>
 
-# IoT
+# 📸IoT
 
 > #### 1. Beacon
 
