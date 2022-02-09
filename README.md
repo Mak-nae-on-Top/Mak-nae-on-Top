@@ -23,7 +23,6 @@ Development of an optimization route guide application for indoor fire evacuatio
 - [Contributors](#Contributors)
 
 <br>
-<br>
 
 # Introduction
 
