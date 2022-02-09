@@ -42,7 +42,9 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 
 > ### IEEE Paper
 
-[Paper](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Development%20of%20an%20optimization%20route%20auide%20application%20for%20indoor%20fire%20evacuation%20using%20beacons.pdf)
+We are currently working on a fix.
+
+[Link to our paper](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Development%20of%20an%20optimization%20route%20auide%20application%20for%20indoor%20fire%20evacuation%20using%20beacons.pdf)
 
 <br>
 <br>
