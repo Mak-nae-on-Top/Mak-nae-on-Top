@@ -20,7 +20,7 @@ Development of an optimization route guide application for indoor fire evacuatio
 - [IoT(Arduino)](#IoT)
   - Beacon
   - Fire detector
-- [Contributors](#Contributors)
+- [📌Contributors](#Contributors)
 
 <br>
 
@@ -142,7 +142,7 @@ real-time analysis A\* algorithm
 <br>
 <br>
 
-# Contributors
+# 📌Contributors
 
 | Name                                                                                                | Country           | Where to find you                       | Role      |
 | --------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------- | --------- |
