@@ -9,13 +9,13 @@ Development of an optimization route guide application for indoor fire evacuatio
 - [Introduction](#Introduction)
 - [Structure](#Structure)
 - [Application](#Application)
-  - Setup
+  - 💡 Setup
   - Implementation
 - [Algorithm](#Algorithm)
   - A\* algorithm
-  - Setup
+  - 💡Setup
 - [Server](#Server)
-  - Setup
+  - 💡Setup
   - Trilaterration
 - [IoT(Arduino)](#IoT)
   - Beacon
