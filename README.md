@@ -133,22 +133,28 @@ real-time analysis A\* algorithm
 
 <p align="center"><img src="./Image/ibeacon.jpg" style="width:700px"></p>
 
-   [Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
+[Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
 
 > #### 2. Fire detector
 
 <p align="center"><img src="./Image/FireDetector.jpg" style="width:700px"></p>
 
-    1. **Composition**
+When the flame sensor detects a fire, it sends a message to the server through http communication. At this time, the buzzer sensor notifies the danger by sound.
 
-      1. NodeMCU
-      2. Flame sensor
-      3. Buzzer sensor
-      4. 5-pin cable
+[Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/fireDetector/fireDetector.ino)
 
-    2. **Update Firmware**
+1. **Composition**
 
-      To use AT command, need to update the firmware to the latest version. Update is performed using ESP8266 Flasher without additional installation.
+   - Nodemcu esp8266 development board
+   - Flame sensor
+   - Buzzer sensor
+   - 5-pin cable
+
+<br>
+
+2. **Update Firmware**
+
+   To use AT command, need to update the firmware to the latest version. Update is performed using ESP8266 Flasher without additional installation.
 
 <br>
 <br>
