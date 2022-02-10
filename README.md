@@ -133,7 +133,14 @@ real-time analysis A\* algorithm
 
 <p align="center"><img src="./Image/ibeacon.jpg" style="width:700px"></p>
 
-[Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
+We made iBeacon using BLE module hm-10 and Arduino Uno board. &nbsp;&nbsp; [Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
+
+[The characteristics of Beacon]
+
+- long transmission and reception range
+- low power consumption
+- accurate indoor location
+- small size, and convenience
 
 > #### 2. Fire detector
 
