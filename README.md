@@ -133,7 +133,7 @@ real-time analysis A\* algorithm
 
 <p align="center"><img src="./Image/ibeacon.jpg" style="width:700px"></p>
 
-    description
+   [Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
 
 > #### 2. Fire detector
 
