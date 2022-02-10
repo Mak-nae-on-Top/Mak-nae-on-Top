@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-// 연결되는 와이파이
-const char* ssid = "와이파이 ssid";
-const char* password = "와이파이 비번";
+// Connected wifi
+const char* ssid = "wifi ssid";
+const char* password = "wifi password";
 
 const int buzzerPin = 5; // buzzer sensor
 const int flamePin = 0; // flame sensor
@@ -11,7 +11,7 @@ int Flame = HIGH;
 
 void passData ()
 {
-  WiFiClient client; // 반드시 지역변수로 선언해줘야 함
+  WiFiClient client; // Must be declared as a local variable
   
   HTTPClient http;  //Declare an object of class HTTPClient
     
@@ -33,7 +33,7 @@ void connectWifi ()
   WiFi.begin(ssid, password);
 
   Serial.print("Connecting");
-  // wifi 연결이 안되어있다면
+  // If there is no wifi connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.print(".");
@@ -53,17 +53,17 @@ void loop() {
   // flame sensor reaction
   Flame = digitalRead(flamePin);
 
-  // 불꽃이 감지된다면
+  // If a flame is detected
   if (Serial.available() > 0) //Flame == 1
   {
-    passData(); // 서버에 메시지 보냄
-    digitalWrite(buzzerPin, HIGH); // 소리가 울리고
+    passData(); // Send message to server
+    digitalWrite(buzzerPin, HIGH); // Sound
     Serial.println("Fire detection");
     delay(5000);
     digitalWrite(buzzerPin, LOW);
     delay(5000);
   }
-  else // 일반적인 상황
+  else // general situation
   {
     Serial.println("No problem");
     delay(10000);
