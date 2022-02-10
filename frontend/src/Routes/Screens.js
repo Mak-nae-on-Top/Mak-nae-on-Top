@@ -328,19 +328,19 @@ const LoginScreen = ({navigation}) => {
   );
 };
 
-// todo : 업로드할 때 건물 이름, 층 수, uuid
 const BlueprintScreen = () => {
   const {authContext, state} = React.useContext(AuthContext);
 
   const [info, setInfo] = React.useState({
-    floor: null,
+    floor: '',
     uuid: '',
   });
 
   const handleInfo = (key, value) => {
+    console.log(key, ':', value.toString());
     setInfo({
       ...info,
-      [key]: value,
+      [key]: value.toString(),
     });
   };
 
@@ -372,8 +372,9 @@ const BlueprintScreen = () => {
       options: {
         saveToPhotos: true,
         mediaType: 'photo',
-        includeBase64: false,
+        includeBase64: true,
         includeExtra,
+        quality: 0.1,
       },
     },
     {
@@ -382,10 +383,10 @@ const BlueprintScreen = () => {
       options: {
         // maxHeight: 200,
         // maxWidth: 300,
-        selectionLimit: 0,
         mediaType: 'photo',
-        includeBase64: false,
+        includeBase64: true,
         includeExtra,
+        quality: 0.1,
       },
     },
   ];
@@ -404,29 +405,35 @@ const BlueprintScreen = () => {
   const uploadBlueprint = async () => {
     await axios
       .post(
-        url + 'app/saveMap',
+        url + 'app/manager/saveMap',
         {
-          token: state.userToken,
-          image: response,
           uuid: info.uuid,
           floor: info.floor,
+          base64: response.assets[0].base64,
         },
         {
           headers: {
+            Authorization: `Bearer ${state.userToken}`,
             'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
         },
       )
-      .then(async response => {
+      .then(response => {
         alert(response.data.message);
         if (response.data.status === 'success') {
-          return true;
+          setUploadSuccess(true);
+          setResponse(null);
+          setInfo({
+            floor: null,
+            uuid: '',
+          });
         }
       })
       .catch(error => {
         console.log(error);
+        throw error;
       });
-    return false;
   };
 
   const handleGetBlueprintBtn = React.useCallback((type, options) => {
@@ -435,15 +442,12 @@ const BlueprintScreen = () => {
     } else {
       launchImageLibrary(options, setResponse);
     }
+    setUploadSuccess(false);
   }, []);
 
   const handleChosenBlueprintBtn = React.useCallback(type => {
     if (type === 'upload') {
-      // todo : image upload to database
-      if (uploadBlueprint()) {
-        setUploadSuccess(true);
-        setResponse(null);
-      }
+      uploadBlueprint();
     } else {
       setUploadSuccess(false);
       setResponse(null);
@@ -495,25 +499,23 @@ const BlueprintScreen = () => {
                       );
                     })}
                   </View>
+
                   {/* Json response */}
                   {/* <UploadResponse>{response}</UploadResponse> */}
+                  {console.log(response)}
 
                   {/* Images that user choose */}
                   {response?.assets &&
-                    response?.assets.map(
-                      ({uri}) => (
-                        console.log(response),
-                        (
-                          <View key={uri} style={styles.ResponseImage}>
-                            <Image
-                              resizeMode="contain"
-                              style={{width: 300, height: 300}}
-                              source={{uri: uri}}
-                            />
-                          </View>
-                        )
-                      ),
-                    )}
+                    response?.assets.map(({uri}) => (
+                      // console.log(response),
+                      <View key={uri} style={styles.ResponseImage}>
+                        <Image
+                          resizeMode="contain"
+                          style={{width: 300, height: 300}}
+                          source={{uri: uri}}
+                        />
+                      </View>
+                    ))}
 
                   {uploadSuccess ? (
                     <View style={styles.UploadSuccessContainer}>
@@ -539,7 +541,7 @@ const BlueprintScreen = () => {
                           Select your blueprint's floor and type beacon uuid
                         </Text>
                         <NumericInput
-                          value={info.floor}
+                          value={parseInt(info.floor, 10)}
                           onChange={value => handleInfo('floor', value)}
                           totalWidth={120}
                           totalHeight={35}
