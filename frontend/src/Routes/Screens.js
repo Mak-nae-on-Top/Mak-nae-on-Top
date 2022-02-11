@@ -374,7 +374,7 @@ const BlueprintScreen = () => {
         mediaType: 'photo',
         includeBase64: true,
         includeExtra,
-        quality: 0.1,
+        quality: 0,
       },
     },
     {
@@ -386,7 +386,7 @@ const BlueprintScreen = () => {
         mediaType: 'photo',
         includeBase64: true,
         includeExtra,
-        quality: 0.1,
+        quality: 0,
       },
     },
   ];

@@ -33,6 +33,8 @@ const RangingBeacon = () => {
   const [floor, setFloor] = React.useState(null);
   const [uuid, setUuid] = React.useState(null);
 
+  const [blueprint, setBlueprint] = React.useState(null);
+
   // Auth
   const handleRequestWhenInUseAuthorization = () => {
     requestWhenInUseAuthorization()
@@ -150,12 +152,36 @@ const RangingBeacon = () => {
   React.useEffect(() => {
     const getLocation = async () => {
       await axios
-        .post(url + 'app/location', rangedBeacons, {
-          headers: {
-            'Content-Type': 'application/json',
-            Device: deviceInfo,
+        .post(
+          url + 'app/location',
+          // rangedBeacons,
+          [
+            {
+              uuid: 'testuuid',
+              major: '01',
+              minor: '01',
+              accuracy: 3.87,
+            },
+            {
+              uuid: 'testuuid',
+              major: '02',
+              minor: '02',
+              accuracy: 3.3,
+            },
+            {
+              uuid: 'testuuid',
+              major: '03',
+              minor: '03',
+              accuracy: 2.53,
+            },
+          ],
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Device: deviceInfo,
+            },
           },
-        })
+        )
         .then(response => {
           setLocation(response.data.locationList);
           setFloor(response.data.floor);
@@ -169,7 +195,38 @@ const RangingBeacon = () => {
     ranging && rangedBeacons.length ? getLocation() : {};
   }, [rangedRegions]);
 
-  return renderRangedBeacons();
+  // get current building's blueprint that user is in
+  React.useEffect(() => {
+    const loadBlueprint = async () => {
+      console.log('!!!!!!!!!!!!!!!');
+      await axios
+        .post(
+          url + 'app/loadMap',
+          {},
+          {
+            headers: {
+              Device: 'testDeviceID',
+            },
+          },
+        )
+        .then(response => {
+          response.data.status === 'success' &&
+            setBlueprint(`data:image/jpeg;base64,${response.data.base64}`);
+        })
+        .catch(error => {
+          console.log(error);
+          throw error;
+        });
+    };
+    // load blueprint when floor & uuid is not null
+    floor !== null && uuid !== null && loadBlueprint();
+  }, [floor, uuid]);
+
+  return (
+    <>
+      <DrawMap location={location} blueprint={blueprint} />
+    </>
+  );
 };
 
 const styles = StyleSheet.create({
