@@ -63,3 +63,4 @@ buck-out/
 
 # Server URL
 /src/ServerURL/url.js
+/src/Components/Beacon/BeaconApiKey.js

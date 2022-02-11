@@ -1,8 +1,14 @@
-import React, {useState, useEffect} from 'react';
+import * as React from 'react';
 import {StyleSheet, Text, View, NativeEventEmitter} from 'react-native';
 
 import Kontakt, {KontaktModule} from 'react-native-kontaktio';
 import {regionSample, GetUuid} from './GetUuid';
+import axios from 'axios';
+
+import BeaconApiKey from './BeaconApiKey';
+import url from '../../ServerURL/url';
+import deviceInfo from '../GetDevice';
+import DrawMap from './DrawMap';
 
 const {
   init,
@@ -17,17 +23,15 @@ const {
 const kontaktEmitter = new NativeEventEmitter(KontaktModule);
 const region1 = regionSample;
 
-// const region2 = {
-//   identifier: 'Test beacons 2',
-//   uuid: 'B0702880-A295-A8AB-F734-031A98A512DE',
-//   major: 2,
-// };
-
 const RangingBeacon = () => {
-  const [ranging, setRanging] = useState(false);
-  const [rangedBeacons, setRangedBeacons] = useState([]);
-  const [rangedRegions, setRangedRegions] = useState([]);
-  const [authStatus, setAuthStatus] = useState('');
+  const [ranging, setRanging] = React.useState(false);
+  const [rangedBeacons, setRangedBeacons] = React.useState([]);
+  const [rangedRegions, setRangedRegions] = React.useState([]);
+  const [authStatus, setAuthStatus] = React.useState('');
+
+  const [location, setLocation] = React.useState([]);
+  const [floor, setFloor] = React.useState(null);
+  const [uuid, setUuid] = React.useState(null);
 
   // Auth
   const handleRequestWhenInUseAuthorization = () => {
@@ -51,20 +55,15 @@ const RangingBeacon = () => {
   // Rendering ranged beacons(sort by close distance)
   const renderRangedBeacons = () => {
     return ranging && rangedBeacons.length ? (
-      rangedBeacons
-        .sort((a, b) => a.accuracy - b.accuracy)
-        .map((beacon, index) => (
-          <View key={index} style={[styles.beaconView]}>
-            <Text style={{fontWeight: 'bold'}}>{beacon.uuid}</Text>
-            <Text>Distance: {beacon.accuracy}</Text>
-            <Text>
-              Major: {beacon.major}, Minor: {beacon.minor}
-            </Text>
-            <Text>
-              RSSI: {beacon.rssi}, Proximity: {beacon.proximity}
-            </Text>
-          </View>
-        ))
+      rangedBeacons.map((beacon, index) => (
+        <View key={index} style={[styles.beaconView]}>
+          <Text style={{fontWeight: 'bold'}}>{beacon.uuid}</Text>
+          <Text>Distance: {beacon.accuracy}</Text>
+          <Text>
+            Major: {beacon.major}, Minor: {beacon.minor}
+          </Text>
+        </View>
+      ))
     ) : (
       <View>
         <Text>No beacons detected within the range</Text>
@@ -83,9 +82,9 @@ const RangingBeacon = () => {
       .catch(error => console.log('Start ranging beacons error : ', error));
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Initialization, configuration and adding of beacon regions
-    init('WGRsFuKslnKIhkfCmLZzHrovqgKMPfmx')
+    init(BeaconApiKey)
       .then(() =>
         configure({
           dropEmptyRanges: true,
@@ -102,7 +101,17 @@ const RangingBeacon = () => {
     const regionRangeEvent = kontaktEmitter.addListener(
       'didRangeBeacons',
       ({beacons: rangedBeacons, region}) => {
-        setRangedBeacons(rangedBeacons);
+        // delete didn't detected beacons & sort by distance
+        const filteredBeacons = rangedBeacons
+          .filter(beacon => beacon.proximity !== 'unknown')
+          .sort((a, b) => a.accuracy - b.accuracy);
+
+        // delete each beacon's useless information
+        filteredBeacons.map(x => {
+          delete x.proximity, delete x.rssi;
+        });
+
+        setRangedBeacons(filteredBeacons);
         setRangedRegions(region);
         console.log('Did Range Beacons : ', rangedBeacons, region);
       },
@@ -132,10 +141,35 @@ const RangingBeacon = () => {
   }, []);
 
   //Start beacon ranging & getting ranged regions when auth changed
-  useEffect(() => {
+  React.useEffect(() => {
     startRanging();
     handleGetRangedRegions();
   }, [authStatus]);
+
+  // get current user's location by sending information of beacons
+  React.useEffect(() => {
+    const getLocation = async () => {
+      await axios
+        .post(url + 'app/location', rangedBeacons, {
+          headers: {
+            Device: deviceInfo,
+          },
+        })
+        .then(response => {
+          setLocation({
+            x: response.data.x,
+            y: response.data.y,
+          });
+          setFloor(response.data.floor);
+          setUuid(response.data.uuid);
+        })
+        .catch(error => {
+          console.log(error);
+          throw error;
+        });
+    };
+    ranging && rangedBeacons.length ? getLocation() : {};
+  }, [rangedRegions]);
 
   return renderRangedBeacons();
 };
