@@ -113,7 +113,7 @@ const RangingBeacon = () => {
 
         setRangedBeacons(filteredBeacons);
         setRangedRegions(region);
-        console.log('Did Range Beacons : ', rangedBeacons, region);
+        // console.log('Did Range Beacons : ', rangedBeacons, region);
       },
     );
     const regionRangeFailEvent = kontaktEmitter.addListener(
@@ -152,14 +152,12 @@ const RangingBeacon = () => {
       await axios
         .post(url + 'app/location', rangedBeacons, {
           headers: {
+            'Content-Type': 'application/json',
             Device: deviceInfo,
           },
         })
         .then(response => {
-          setLocation({
-            x: response.data.x,
-            y: response.data.y,
-          });
+          setLocation(response.data.locationList);
           setFloor(response.data.floor);
           setUuid(response.data.uuid);
         })
