@@ -410,6 +410,8 @@ const BlueprintScreen = () => {
           uuid: info.uuid,
           floor: info.floor,
           base64: response.assets[0].base64,
+          imageHeight: response.assets[0].height,
+          imageWidth: response.assets[0].width,
         },
         {
           headers: {
@@ -502,7 +504,7 @@ const BlueprintScreen = () => {
 
                   {/* Json response */}
                   {/* <UploadResponse>{response}</UploadResponse> */}
-                  {console.log(response)}
+                  {/* {console.log(response)} */}
 
                   {/* Images that user choose */}
                   {response?.assets &&

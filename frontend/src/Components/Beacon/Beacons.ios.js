@@ -34,6 +34,11 @@ const RangingBeacon = () => {
   const [uuid, setUuid] = React.useState(null);
 
   const [blueprint, setBlueprint] = React.useState(null);
+  const [blueprintSize, setBlueprintSize] = React.useState({
+    width: '',
+    height: '',
+  });
+  const [imageSize, setImageSize] = React.useState({width: '', height: ''});
 
   // Auth
   const handleRequestWhenInUseAuthorization = () => {
@@ -155,26 +160,6 @@ const RangingBeacon = () => {
         .post(
           url + 'app/location',
           rangedBeacons,
-          // [
-          //   {
-          //     uuid: 'testuuid',
-          //     major: '01',
-          //     minor: '01',
-          //     accuracy: 3.87,
-          //   },
-          //   {
-          //     uuid: 'testuuid',
-          //     major: '02',
-          //     minor: '02',
-          //     accuracy: 3.3,
-          //   },
-          //   {
-          //     uuid: 'testuuid',
-          //     major: '03',
-          //     minor: '03',
-          //     accuracy: 2.53,
-          //   },
-          // ],
           {
             headers: {
               'Content-Type': 'application/json',
@@ -198,21 +183,29 @@ const RangingBeacon = () => {
   // get current building's blueprint that user is in
   React.useEffect(() => {
     const loadBlueprint = async () => {
-      console.log('!!!!!!!!!!!!!!!');
       await axios
         .post(
           url + 'app/loadMap',
           {uuid: uuid, floor: floor},
           {
             headers: {
-              // Device: 'testDeviceID',
               Device: deviceInfo,
             },
           },
         )
         .then(response => {
           response.data.status === 'success' &&
-            setBlueprint(`data:image/jpeg;base64,${response.data.base64}`);
+            (setBlueprint(`data:image/jpeg;base64,${response.data.base64}`),
+            setBlueprintSize({
+              ...blueprintSize,
+              width: response.data.blueprint_width,
+              height: response.data.blueprint_height,
+            }),
+            setImageSize({
+              ...imageSize,
+              width: response.data.image_width,
+              height: response.data.image_height,
+            }));
         })
         .catch(error => {
           console.log(error);
@@ -223,9 +216,23 @@ const RangingBeacon = () => {
     floor !== null && uuid !== null && loadBlueprint();
   }, [floor, uuid]);
 
+  if (
+    blueprintSize.width === '' ||
+    blueprintSize.height === '' ||
+    imageSize.width === '' ||
+    imageSize.height === '' ||
+    location[0].x === '' ||
+    location[0].y === ''
+  )
+    return <></>;
   return (
     <>
-      <DrawMap location={location} blueprint={blueprint} />
+      <DrawMap
+        location={location}
+        blueprint={blueprint}
+        blueprintSize={blueprintSize}
+        imageSize={imageSize}
+      />
     </>
   );
 };
