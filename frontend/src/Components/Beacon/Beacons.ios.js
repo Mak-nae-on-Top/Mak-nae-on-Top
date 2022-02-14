@@ -159,27 +159,7 @@ const RangingBeacon = () => {
       await axios
         .post(
           url + 'app/location',
-          // rangedBeacons,
-          [
-            {
-              uuid: 'testuuid',
-              major: '01',
-              minor: '01',
-              accuracy: 3.87,
-            },
-            {
-              uuid: 'testuuid',
-              major: '02',
-              minor: '02',
-              accuracy: 3.3,
-            },
-            {
-              uuid: 'testuuid',
-              major: '03',
-              minor: '03',
-              accuracy: 2.53,
-            },
-          ],
+          rangedBeacons,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -209,8 +189,7 @@ const RangingBeacon = () => {
           {uuid: uuid, floor: floor},
           {
             headers: {
-              Device: 'testDeviceID',
-              // Device: deviceInfo,
+              Device: deviceInfo,
             },
           },
         )
