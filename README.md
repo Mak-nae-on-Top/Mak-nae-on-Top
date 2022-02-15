@@ -4,22 +4,33 @@ Development of an optimization route guide application for indoor fire evacuatio
 
 <br>
 
+![npm 8.3.1](https://img.shields.io/badge/npm-8.3.1-blue.svg)
+![react native 0.66.4](https://img.shields.io/badge/react%20native-0.66.4-blue.svg)
+![react 17.0.2](https://img.shields.io/badge/react-17.0.2-blue.svg)
+![Spring Boot 2.0](https://img.shields.io/badge/Spring%20Boot-2.0-green.svg)
+![Mysql 5.6](https://img.shields.io/badge/Mysql-5.6-green.svg)
+![JDK 1.8](https://img.shields.io/badge/JDK-1.8-green.svg)
+![license](https://img.shields.io/badge/license-MIT-orange.svg)
+
+<br>
+
 ## 🗺️Table of Contents
 
 - [Introduction](#Introduction)
+  - Novelty
+  - IEEE Paper
 - [Structure](#Structure)
 - [Application](#Application)
   - Setup
   - Implementation
 - [Algorithm](#Algorithm)
   - A\* algorithm
-  - Setup
+  - Trilaterration
 - [Server](#Server)
   - Setup
-  - Trilaterration
+  - Diagram
 - [IoT(Arduino)](#IoT)
-  - Beacon
-  - Fire detector
+  - System Overview
 - [📌Contributors](#Contributors)
 
 <br>
@@ -32,13 +43,15 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 
 <br>
 
-> ### Purpose
+> ### Novelty
 
     1. Use beacons to determine the exact location of the user in the building.
 
     2. Develop user-friendly application such as informing users of the beacon installation location by providing users with the ability to upload and modify building blueprints.
 
     3. Identify the density of people in the building and calculate the weight value to inform the optimal path.
+
+<br>
 
 > ### IEEE Paper
 
@@ -51,130 +64,109 @@ We are currently working on a fix.
 
 # 🍌Structure
 
-> Application structure
+> Structure
 
 <p align="center"><img src="./Image/system.png" style="width:700px"></p>
+
+    1. When the manager uploads a blueprint for each floor, the application converts it to a map.
+    2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
+    3. In peacetime, the application shows an optimized route to the destination that the user wants.
+    4. In the event of a fire, a fire alarm that is linked to the server notifies the server of the occurrence of the fire, and the server notifies the user of the fire through the application.
+    5. The application displays the fastest escape route from the current user location on the map considering the current population cluster.
 
 <br>
 <br>
 
 # 🎙️Application
 
-> #### 1. Setup
+> ### 1. Setup
 
+    코드 위치 링크로
     사용한 툴과 코드 실행 방법
 
-> #### 2. Implementation
+> ### 2. Implementation
 
 <br>
 
 - Sidebar
-
-<p align="center">screen image</p>
-
-    짧은 설명과 코드 위치 링크로
-
-<br>
-
-- Beacon
-
-<p align="center">screen image</p>
-
-    짧은 설명과 코드 위치 링크로
-
-<br>
-
-- Blueprint
-
-<p align="center">screen image</p>
-
-    짧은 설명과 코드 위치 링크로
+- Beacon detecting
+- Set destination
+- Login / Signup
+- Upload blueprint
+- Connect to server
+- Coordinates with Canvas
 
 <br>
 <br>
 
 # 🍚Algorithm
 
-real-time analysis A\* algorithm
+> ### 1. A\* algorithm
 
-> #### 1. A\* algorithm
+<br>
 
-<p align="center">result image</p>
+<p align="center"><img src="./Image/route.png" style="width:1200px"></p>
 
-    formula
-    description
+    1. 휴리스틱 함수 h(n)을 이용해서 A알고리즘에게 현재 위치n에서 목표까지의 최소비용을 산정한다.
+    2.
+    3.
+    4.
 
-> #### 2. Setup
+<br>
+<br>
 
-    코드 위치 링크로
-    사용한 툴과 코드 실행 방법
+> ### 2. Trilaterration
+
+<br>
+
+<p align="center"><img src="./Image/trilateration.png" style="width:600px"></p>
+
+<br>
+
+Using Tx Power (transmission strength) and RSSI (reception strength), the straight-line distance between a beacon and a smart device can be calculated. After installing at least 3 beacons, measure the indoor location by trilaterration.
+
+    1. Nodes A, B, and C are the locations where the beacon is installed, and D is the location (x,y) of the smart device.
+    2. The calculated distances from nodes A, B, and C to the smart devices are e, f, and g D, respectively, which is determined using the path loss model.
 
 <br>
 <br>
 
 # 🌳Server
 
-> #### 1. Setup
+> ### 1. Setup
 
     코드 위치 링크로
     사용한 툴과 코드 실행 방법
 
-> #### 2. Trilaterration
-
-    What is Trilaterration
-    코드 위치 링크로
+> ### 2. Diagram
 
 <br>
 <br>
 
 # 📹IoT
 
-> #### 1. Beacon
+<p align="center"><img src="./Image/trilateration.png" style="width:600px"></p>
 
-<p align="center"><img src="./Image/ibeacon.jpg" style="width:700px"></p>
+    1.
+    2.
+    3.
+    4.
 
-We made iBeacon using BLE module hm-10 and Arduino Uno board. &nbsp;&nbsp; [Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/hm-10/hm-10.ino)
-
-[The characteristics of Beacon]
-
-- long transmission and reception range
-- low power consumption
-- accurate indoor location
-- small size, and convenience
-
-> #### 2. Fire detector
-
-<p align="center"><img src="./Image/FireDetector.jpg" style="width:700px"></p>
-
-When the flame sensor detects a fire, it sends a message to the server through http communication. At this time, the buzzer sensor notifies the danger by sound.
-
-[Link to code](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/arduino/fireDetector/fireDetector.ino)
-
-1. **Composition**
-
-   - Nodemcu esp8266 development board
-   - Flame sensor
-   - Buzzer sensor
-   - 5-pin cable
-
-<br>
-
-2. **Update Firmware**
-
-   To use AT command, need to update the firmware to the latest version. Update is performed using ESP8266 Flasher without additional installation.
+> ### 1. System Overview
 
 <br>
 <br>
 
 # 📌Contributors
 
-| Name                                                                                                | Country           | Where to find you                       | Role      |
-| --------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------- | --------- |
-| Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" /> | Republic Of Korea | [Github](https://github.com/gnoes)      | Paper     |
-| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />     | Republic Of Korea | [Github](https://github.com/gitnamu)    | Backend   |
-| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rjsduf0503) | Frontend  |
-| Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />  | Republic Of Korea | [Github](https://github.com/rmfosem613) | IoT       |
-| Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />    | Republic Of Korea | [Github](https://github.com/tjsalstn33) | Algorithm |
+| Name                                                                                                              | Univ                   | Major                          | Where to find you                       | Role      |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------ | --------------------------------------- | --------- |
+| Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" />               | Jeju National Univ     | Software convergence education | [Github](https://github.com/gnoes)      | Paper     |
+| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />                   | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/gitnamu)    | Backend   |
+| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />                | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/rjsduf0503) | Frontend  |
+| Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />                | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/rmfosem613) | IoT       |
+| Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />                  | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/tjsalstn33) | Algorithm |
+| Sarah Horning <br /> <img src="https://ca.slack-edge.com/T02SGDF7CJH-U02TKKULPJL-7e3a7bbfb8c3-512" width="100" /> | Purdue Unive           | CNIT                           | [Github](https://github.com/tjsalstn33) | Paper     |
 
 <br>
 <br>
