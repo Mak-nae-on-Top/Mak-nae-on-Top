@@ -145,6 +145,8 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 2. Diagram
 
+<p align="center"><img src="./Image/server.png" style="width:600px"></p>
+
 <br>
 <br>
 
