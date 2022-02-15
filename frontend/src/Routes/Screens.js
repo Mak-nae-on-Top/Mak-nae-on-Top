@@ -11,7 +11,7 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import {ListItem, Icon} from 'react-native-elements';
+import {ListItem, Icon, Overlay, Button as Btn} from 'react-native-elements';
 import 'react-native-gesture-handler';
 import {Searchbar} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
@@ -334,10 +334,10 @@ const BlueprintScreen = () => {
   const [info, setInfo] = React.useState({
     floor: '',
     uuid: '',
+    buildingName: '',
   });
 
   const handleInfo = (key, value) => {
-    console.log(key, ':', value.toString());
     setInfo({
       ...info,
       [key]: value.toString(),
@@ -347,6 +347,7 @@ const BlueprintScreen = () => {
   const [response, setResponse] = React.useState(null);
   const [uploadSuccess, setUploadSuccess] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState();
+  const [blueprints, setBlueprints] = React.useState([]);
 
   const includeExtra = true;
 
@@ -438,6 +439,33 @@ const BlueprintScreen = () => {
       });
   };
 
+  const getBlueprints = async () => {
+    await axios
+      .post(
+        url + 'app/manager/loadAllMap',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            // 'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        // image url, floor, uuid, building name
+        const allInformation = [];
+        response.data.map(value => {
+          allInformation.push(value);
+        });
+        allInformation !== blueprints && setBlueprints(allInformation);
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
+
   const handleGetBlueprintBtn = React.useCallback((type, options) => {
     if (type === 'capture') {
       launchCamera(options, setResponse);
@@ -462,8 +490,248 @@ const BlueprintScreen = () => {
 
   const handleAccordionClick = index => {
     activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
+    if (index === 1) getBlueprints();
   };
 
+  const [visibleIndex, setVisibleIndex] = React.useState();
+
+  const toggleOverlay = (item, idx) => {
+    visibleIndex === idx && idx !== null
+      ? setVisibleIndex(null)
+      : (setVisibleIndex(idx),
+        setInfo({
+          floor: item.floor,
+          uuid: item.uuid,
+          buildingName: item.buildingName,
+        }),
+        setResponse({
+          assets: [
+            {
+              base64: item.base64,
+            },
+          ],
+        }));
+  };
+
+  const handleBlueprint = index => {
+    switch (index) {
+      // Upload Blueprint
+      case 0:
+        return (
+          <>
+            <View style={styles.uploadBtnContainer}>
+              {actions.map(({title, type, options}) => {
+                return (
+                  <UploadBtn
+                    key={title}
+                    onPress={() => handleGetBlueprintBtn(type, options)}>
+                    {title}
+                  </UploadBtn>
+                );
+              })}
+            </View>
+
+            {/* Json response */}
+            {/* <UploadResponse>{response}</UploadResponse> */}
+            {/* {console.log(response)} */}
+
+            {/* Images that user choose */}
+            {response && response?.assets && response?.assets !== undefined && (
+              <View style={styles.ResponseImage}>
+                <Image
+                  resizeMode="contain"
+                  style={{width: 300, height: 300}}
+                  source={{uri: response.assets[0].uri}}
+                />
+              </View>
+            )}
+
+            {uploadSuccess ? (
+              <View style={styles.UploadSuccessContainer}>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                    marginTop: 10,
+                    marginBottom: 20,
+                  }}>
+                  Successfully Uploaded
+                </Text>
+              </View>
+            ) : (
+              []
+            )}
+
+            {/* Upload Btn & Delete Btn */}
+            {response && !response.didCancel && (
+              <>
+                <View style={[styles.row, {justifyContent: 'center'}]}>
+                  <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+                    Select your blueprint's floor and type beacon uuid
+                  </Text>
+                  <NumericInput
+                    value={parseInt(info.floor, 10)}
+                    onChange={value => handleInfo('floor', value)}
+                    totalWidth={120}
+                    totalHeight={35}
+                    rounded
+                    iconStyle={{color: 'white'}}
+                    rightButtonBackgroundColor="#4f4f4f"
+                    leftButtonBackgroundColor="#a3a3a3"
+                  />
+                  <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                    <TextInput
+                      name="uuid"
+                      key="uuid"
+                      style={[styles.TextInput, {width: 200}]}
+                      placeholder="Type beacon's uuid"
+                      autoCorrect={false}
+                      clearButtonMode="always"
+                      onChangeText={value => handleInfo('uuid', value)}
+                      placeholderTextColor="#282828"
+                    />
+                  </View>
+                </View>
+                <View style={styles.uploadBtnContainer}>
+                  {actions2.map(({title, type}) => {
+                    return (
+                      <UploadBtn
+                        key={title}
+                        onPress={() => handleChosenBlueprintBtn(type)}>
+                        {title}
+                      </UploadBtn>
+                    );
+                  })}
+                </View>
+              </>
+            )}
+          </>
+        );
+      // Uploaded Blueprint List
+      case 1:
+        return (
+          <View>
+            {blueprints.map((item, idx) => {
+              return (
+                <>
+                  <Overlay
+                    isVisible={visibleIndex === idx}
+                    onBackdropPress={() => toggleOverlay(idx)}>
+                    <View style={[styles.row, {justifyContent: 'center'}]}>
+                      <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+                        Select your blueprint, blueprint's floor and type beacon
+                        uuid, building name
+                      </Text>
+                      {response &&
+                        response.assets[0] &&
+                        response.assets[0].base64 !== undefined && (
+                          <View style={styles.ResponseImage}>
+                            <Image
+                              resizeMode="contain"
+                              style={{width: 300, height: 300}}
+                              source={{
+                                uri: `data:image/jpeg;base64,${response.assets[0].base64}`,
+                              }}
+                            />
+                          </View>
+                        )}
+                      <View style={styles.uploadBtnContainer}>
+                        {actions.map(({title, type, options}) => {
+                          return (
+                            <UploadBtn
+                              key={title}
+                              onPress={() =>
+                                handleGetBlueprintBtn(type, options)
+                              }>
+                              {title}
+                            </UploadBtn>
+                          );
+                        })}
+                      </View>
+                      <NumericInput
+                        value={parseInt(info.floor, 10)}
+                        onChange={value => handleInfo('floor', value)}
+                      />
+                      <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                        <TextInput
+                          name="uuid"
+                          key="uuid"
+                          style={[styles.TextInput, {width: 200}]}
+                          value={info.uuid}
+                          autoCorrect={false}
+                          clearButtonMode="always"
+                          onChangeText={value => handleInfo('uuid', value)}
+                          placeholderTextColor="#282828"
+                        />
+                      </View>
+                      <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                        <TextInput
+                          name="buildingName"
+                          key="buildingName"
+                          style={[styles.TextInput, {width: 200}]}
+                          value={info.buildingName}
+                          autoCorrect={false}
+                          clearButtonMode="always"
+                          onChangeText={value =>
+                            handleInfo('buildingName', value)
+                          }
+                          placeholderTextColor="#282828"
+                        />
+                      </View>
+                    </View>
+                    <Btn title="Update" onPress={() => toggleOverlay(idx)} />
+                  </Overlay>
+
+                  <ListItem.Swipeable
+                    bottomDivider
+                    leftContent={
+                      <Btn
+                        title="Modify"
+                        icon={{name: 'auto-fix-high', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'green',
+                        }}
+                        onPress={() => toggleOverlay(item, idx)}
+                      />
+                    }
+                    rightContent={
+                      <Btn
+                        title="Delete"
+                        icon={{name: 'delete', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'red',
+                        }}
+                      />
+                    }>
+                    {idx % 2 === 0 ? (
+                      <FontAwesome name="building-o" size={30} />
+                    ) : (
+                      <FontAwesome name="building" size={30} />
+                    )}
+                    <ListItem.Content style={{alignItems: 'center'}}>
+                      <ListItem.Title>
+                        {item.buildingName + ' ' + item.floor + 'F'}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <ListItem.Chevron />
+                  </ListItem.Swipeable>
+                </>
+              );
+            })}
+          </View>
+        );
+      // List that needs to be fixed
+      case 2:
+        // todo : Get user's blueprint list that needs to be fixed from database
+        break;
+      default:
+        break;
+    }
+  };
+
+  // getBlueprints();
   return (
     <SafeAreaView flex={1}>
       <View style={styles.AccList}>
@@ -487,111 +755,7 @@ const BlueprintScreen = () => {
               onPress={() => {
                 handleAccordionClick(index);
               }}>
-              {/* Upload Blueprint */}
-              {index === 0 && (
-                <>
-                  <View style={styles.uploadBtnContainer}>
-                    {actions.map(({title, type, options}) => {
-                      return (
-                        <UploadBtn
-                          key={title}
-                          onPress={() => handleGetBlueprintBtn(type, options)}>
-                          {title}
-                        </UploadBtn>
-                      );
-                    })}
-                  </View>
-
-                  {/* Json response */}
-                  {/* <UploadResponse>{response}</UploadResponse> */}
-                  {/* {console.log(response)} */}
-
-                  {/* Images that user choose */}
-                  {response?.assets &&
-                    response?.assets.map(({uri}) => (
-                      // console.log(response),
-                      <View key={uri} style={styles.ResponseImage}>
-                        <Image
-                          resizeMode="contain"
-                          style={{width: 300, height: 300}}
-                          source={{uri: uri}}
-                        />
-                      </View>
-                    ))}
-
-                  {uploadSuccess ? (
-                    <View style={styles.UploadSuccessContainer}>
-                      <Text
-                        style={{
-                          fontSize: 30,
-                          fontWeight: 'bold',
-                          marginTop: 10,
-                          marginBottom: 20,
-                        }}>
-                        Successfully Uploaded
-                      </Text>
-                    </View>
-                  ) : (
-                    []
-                  )}
-
-                  {/* Upload Btn & Delete Btn */}
-                  {response && !response.didCancel && (
-                    <>
-                      <View style={[styles.row, {justifyContent: 'center'}]}>
-                        <Text style={{fontWeight: 'bold', marginBottom: 10}}>
-                          Select your blueprint's floor and type beacon uuid
-                        </Text>
-                        <NumericInput
-                          value={parseInt(info.floor, 10)}
-                          onChange={value => handleInfo('floor', value)}
-                          totalWidth={120}
-                          totalHeight={35}
-                          rounded
-                          iconStyle={{color: 'white'}}
-                          rightButtonBackgroundColor="#4f4f4f"
-                          leftButtonBackgroundColor="#a3a3a3"
-                        />
-                        <View style={[styles.inputInfoView, {marginLeft: 10}]}>
-                          <TextInput
-                            name="uuid"
-                            key="uuid"
-                            style={[styles.TextInput, {width: 200}]}
-                            placeholder="Type beacon's uuid"
-                            autoCorrect={false}
-                            clearButtonMode="always"
-                            onChangeText={value => handleInfo('uuid', value)}
-                            placeholderTextColor="#282828"
-                          />
-                        </View>
-                      </View>
-                      <View style={styles.uploadBtnContainer}>
-                        {actions2.map(({title, type}) => {
-                          return (
-                            <UploadBtn
-                              key={title}
-                              onPress={() => handleChosenBlueprintBtn(type)}>
-                              {title}
-                            </UploadBtn>
-                          );
-                        })}
-                      </View>
-                    </>
-                  )}
-                </>
-              )}
-
-              {/* Uploaded Blueprint List */}
-              {index === 1 && (
-                <>{/* todo : Get user's blueprint list from database */}</>
-              )}
-
-              {/* List that needs to be fixed */}
-              {index === 2 && (
-                <>
-                  {/* todo : Get user's blueprint list that needs to be fixed from database */}
-                </>
-              )}
+              {handleBlueprint(index)}
             </ListItem.Accordion>
           );
         })}
