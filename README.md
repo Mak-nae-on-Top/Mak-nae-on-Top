@@ -135,7 +135,8 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 1. Setup
 
-    [Server code git link](https://github.com/Mak-nae-on-Top/Server)  
+    [Server code git link](https://github.com/Mak-nae-on-Top/Server)
+<br>
     - Server: Spring boot 2.6.3  
     - Database: MariaDB  
     - Executable file location: Server/build/libs/demo.0.0.1-SNAPSHOT.jar  
