@@ -81,8 +81,11 @@ We are currently working on a fix.
 
 > ### 1. Setup
 
-    코드 위치 링크로
-    사용한 툴과 코드 실행 방법
+[Application code git link](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/tree/main/frontend)
+
+    - Framework : React Native 0.66.4
+
+    - Test device : iphone
 
 > ### 2. Implementation
 
@@ -107,10 +110,9 @@ We are currently working on a fix.
 
 <p align="center"><img src="./Image/route.png" style="width:1200px"></p>
 
-    1. 휴리스틱 함수 h(n)을 이용해서 A알고리즘에게 현재 위치n에서 목표까지의 최소비용을 산정한다.
-    2.
-    3.
-    4.
+    The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
+
+    The function h(n) that finds the expected cost from the current node to the target node is called the heuristic function, and the Manhattan equation is used here.
 
 <br>
 <br>
@@ -119,7 +121,7 @@ We are currently working on a fix.
 
 <br>
 
-<p align="center"><img src="./Image/trilateration.png" style="width:600px"></p>
+<p align="center"><img src="./Image/trilateration.png" style="width:400px"></p>
 
 <br>
 
@@ -135,29 +137,35 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 1. Setup
 
-[Server code git link](https://github.com/Mak-nae-on-Top/Server)  
+[Server code git link](https://github.com/Mak-nae-on-Top/Server)
 
-    - Server: Spring boot 2.6.3  
-    - Database: MariaDB  
-    - Executable file location: Server/build/libs/demo.0.0.1-SNAPSHOT.jar  
-
-
+    - Server: Spring boot 2.6.3
+    - Database: MariaDB
+    - Executable file location: Server/build/libs/demo.0.0.1-SNAPSHOT.jar
 
 > ### 2. Diagram
 
-<p align="center"><img src="./Image/server.png" style="width:600px"></p>
+<p align="center"><img src="./Image/server.png" style="width:700px"></p>
+
+<br>
+
+    The server uses the spring boot framework and Database uses MariaDB and are distributed through AWS.
+    The server receives the id of the beacon from the app and the distance between the user and the beacon through the http protocol. With this data, the server estimates the user's location using trilateration.
+    The database is largely composed of five tables: a beacon table storing ID and location information, a building table storing the name and manager of the building, a room table storing the name and location of the room, a population table storing users' locations, and a user table storing user information.
 
 <br>
 <br>
 
 # 📹IoT
 
-<p align="center"><img src="./Image/trilateration.png" style="width:600px"></p>
+<p align="center"><img src="./Image/IoT.jpg" style="width:700px"></p>
 
-    1.
-    2.
-    3.
-    4.
+    1. Install flame sensor and beacon indoors.
+    2. When a fire is detected, the Nodemcu communicates with the server through the connected wifi.
+       Otherwise, the detection is repeated until the screen is detected.
+    3. The device detects the Beacon's signals through a Bluetooth connection.
+    4. The app can monitor the user's location.
+    5. Manage users' data and IoT devices on the server.
 
 > ### 1. System Overview
 
@@ -166,14 +174,14 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 # 📌Contributors
 
-| Name                                                                                                              | Univ                   | Major                          | Where to find you                       | Role      |
-| ----------------------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------ | --------------------------------------- | --------- |
-| Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" />               | Jeju National Univ     | Software convergence education | [Github](https://github.com/gnoes)      | Paper     |
-| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />                   | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/gitnamu)    | Backend   |
-| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />                | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/rjsduf0503) | Frontend  |
-| Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />                | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/rmfosem613) | IoT       |
-| Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />                  | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/tjsalstn33) | Algorithm |
-| Sarah Horning <br /> <img src="https://ca.slack-edge.com/T02SGDF7CJH-U02TKKULPJL-7e3a7bbfb8c3-512" width="100" /> | Purdue Unive           | CNIT                           | [Github](https://github.com/tjsalstn33) | Paper     |
+| Name                                                                                                | Univ                   | Major                          | Where to find you                          | Role      |
+| --------------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------ | ------------------------------------------ | --------- |
+| Junseong Moon <br /> <img src="https://avatars.githubusercontent.com/u/28281779?v=4" width="100" /> | Jeju National Univ     | Software convergence education | [Github](https://github.com/gnoes)         | Paper     |
+| Namho Kim <br /> <img src="https://avatars.githubusercontent.com/u/34561570?v=4" width="100" />     | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/gitnamu)       | Backend   |
+| Geonyeol Ryu <br /> <img src="https://avatars.githubusercontent.com/u/34560965?v=4" width="100" />  | Chungnam National Univ | Computer Science Engineering   | [Github](https://github.com/rjsduf0503)    | Frontend  |
+| Migyeong Kim <br /> <img src="https://avatars.githubusercontent.com/u/51354302?v=4" width="100" />  | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/rmfosem613)    | IoT       |
+| Minsoo Sun <br /> <img src="https://avatars.githubusercontent.com/u/65339890?v=4" width="100" />    | Jeju National Univ     | Computer Engineering           | [Github](https://github.com/tjsalstn33)    | Algorithm |
+| Sarah Horning <br /> <img src="https://avatars.githubusercontent.com/u/75345340?v=4" width="100" /> | Purdue Unive           | CNIT                           | [Github](https://github.com/sarahhorning3) | Paper     |
 
 <br>
 <br>
