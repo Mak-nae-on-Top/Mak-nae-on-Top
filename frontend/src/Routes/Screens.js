@@ -373,12 +373,16 @@ const BlueprintScreen = () => {
 
   const accordionList = [
     {
-      title: 'Upload Blueprint',
+      title: 'Upload blueprint',
       iconName: 'map',
     },
     {
-      title: 'Uploaded Bluprint List',
+      title: 'Uploaded blueprint list',
       iconName: 'list',
+    },
+    {
+      title: 'Taking coordinates of each room',
+      iconName: 'push-pin',
     },
     {
       title: 'Needs to be fixed',
@@ -422,6 +426,30 @@ const BlueprintScreen = () => {
       type: 'delete',
     },
   ];
+
+  const deleteBlueprint = async () => {
+    await axios
+      .post(
+        url + 'app/manager/deleteFloor',
+        {uuid: info.uuid, floor: info.floor},
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        if (response.data.status === 'success') {
+          getBlueprints();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
 
   const uploadBlueprint = async () => {
     await axios
@@ -661,10 +689,6 @@ const BlueprintScreen = () => {
                     isVisible={visibleIndex === idx}
                     onBackdropPress={() => toggleOverlay(idx)}>
                     <View style={[{justifyContent: 'center'}]}>
-                      {/* <Text style={{fontWeight: 'bold', marginBottom: 10}}>
-                        Select your blueprint, blueprint's floor and type beacon
-                        uuid, building name
-                      </Text> */}
                       {response &&
                         response?.assets &&
                         response.assets[0] &&
@@ -746,7 +770,11 @@ const BlueprintScreen = () => {
                             backgroundColor: 'green',
                           },
                         ]}
-                        onPress={() => toggleOverlay(idx)}
+                        onPress={() => {
+                          uploadBlueprint();
+                          toggleOverlay(idx);
+                          getBlueprints();
+                        }}
                       />
                       <Btn
                         key="cancel"
@@ -783,6 +811,7 @@ const BlueprintScreen = () => {
                           minHeight: '100%',
                           backgroundColor: 'red',
                         }}
+                        onPress={() => deleteBlueprint()}
                       />
                     }>
                     {idx % 2 === 0 ? (
@@ -802,8 +831,11 @@ const BlueprintScreen = () => {
             })}
           </View>
         );
-      // List that needs to be fixed
+      // Taking the coordinates of each room.
       case 2:
+        return <></>;
+      // List that needs to be fixed
+      case 3:
         // todo : Get user's blueprint list that needs to be fixed from database
         break;
       default:
