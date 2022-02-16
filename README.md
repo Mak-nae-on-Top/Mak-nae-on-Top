@@ -77,7 +77,7 @@ We are currently working on a fix.
 <br>
 <br>
 
-# Application
+# 🎹Application
 
 > ### 1. Setup
 
