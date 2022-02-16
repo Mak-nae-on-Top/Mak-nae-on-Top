@@ -121,7 +121,7 @@ The function h(n) that finds the expected cost from the current node to the targ
 
 <br>
 
-![trilaterration](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/trilateration.png)
+![trilaterration](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/trilateration.png){: width="600"}
 
 <br>
 
