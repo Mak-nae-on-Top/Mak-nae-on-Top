@@ -66,7 +66,7 @@ We are currently working on a fix.
 
 > Structure
 
-<p align="center"><img src="./Image/system.png" style="width:700px"></p>
+![system](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.png?raw=true)
 
     1. When the manager uploads a blueprint for each floor, the application converts it to a map.
     2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
@@ -108,7 +108,7 @@ We are currently working on a fix.
 
 <br>
 
-<p align="center"><img src="./Image/route.png" style="width:1200px"></p>
+![algorithm](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.png)
 
     The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
 
@@ -121,7 +121,7 @@ We are currently working on a fix.
 
 <br>
 
-<p align="center"><img src="./Image/trilateration.png" style="width:400px"></p>
+![trilaterration](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/trilateration.png)
 
 <br>
 
@@ -145,7 +145,7 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 2. Diagram
 
-<p align="center"><img src="./Image/server.png" style="width:700px"></p>
+![server](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/server.png)
 
 <br>
 
@@ -158,7 +158,7 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 # 📹IoT
 
-<p align="center"><img src="./Image/IoT.jpg" style="width:700px"></p>
+![iot](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg)
 
     1. Install flame sensor and beacon indoors.
     2. When a fire is detected, the Nodemcu communicates with the server through the connected wifi.
