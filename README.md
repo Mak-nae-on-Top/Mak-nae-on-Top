@@ -77,7 +77,7 @@ We are currently working on a fix.
 <br>
 <br>
 
-# 🎙️Application
+# Application
 
 > ### 1. Setup
 
@@ -158,6 +158,8 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 # 📹IoT
 
+> ### 1. System Overview
+
 ![iot](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg)
 
     1. Install flame sensor and beacon indoors.
@@ -166,8 +168,6 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
     3. The device detects the Beacon's signals through a Bluetooth connection.
     4. The app can monitor the user's location.
     5. Manage users' data and IoT devices on the server.
-
-> ### 1. System Overview
 
 <br>
 <br>
