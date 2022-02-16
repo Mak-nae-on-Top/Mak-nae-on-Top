@@ -45,11 +45,11 @@ In order to prevent accidents involving indoor fires, this study was conducted b
 
 > ### Novelty
 
-    1. Use beacons to determine the exact location of the user in the building.
+1. Use beacons to determine the exact location of the user in the building.
 
-    2. Develop user-friendly application such as informing users of the beacon installation location by providing users with the ability to upload and modify building blueprints.
+2. Develop user-friendly application such as informing users of the beacon installation location by providing users with the ability to upload and modify building blueprints.
 
-    3. Identify the density of people in the building and calculate the weight value to inform the optimal path.
+3. Identify the density of people in the building and calculate the weight value to inform the optimal path.
 
 <br>
 
