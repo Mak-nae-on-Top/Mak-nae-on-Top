@@ -66,7 +66,7 @@ We are currently working on a fix.
 
 > Structure
 
-![system](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.png?raw=true)
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.jpg?raw=true" width="400"></p>
 
 1. When the manager uploads a blueprint for each floor, the application converts it to a map.
 2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
@@ -108,7 +108,7 @@ We are currently working on a fix.
 
 <br>
 
-![algorithm](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.png)
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.jpg" width="400"></p>
 
 The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
 
@@ -121,8 +121,7 @@ The function h(n) that finds the expected cost from the current node to the targ
 
 <br>
 
-![trilaterration](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/trilateration.png){: width="600"}
-
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/trilateration.jpg" width="400"></p>
 <br>
 
 Using Tx Power (transmission strength) and RSSI (reception strength), the straight-line distance between a beacon and a smart device can be calculated. After installing at least 3 beacons, measure the indoor location by trilaterration.
@@ -145,7 +144,7 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 2. Diagram
 
-![server](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/server.png)
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/server.jpg" width="400"></p>
 
 <br>
 
@@ -160,7 +159,7 @@ The database is largely composed of five tables: a beacon table storing ID and l
 
 > ### 1. System Overview
 
-![iot](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg)
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg" width="400"></p>
 
     1. Install flame sensor and beacon indoors.
     2. When a fire is detected, the Nodemcu communicates with the server through the connected wifi.
