@@ -29,6 +29,9 @@ import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
 import url from '../ServerURL/url';
 
+const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
@@ -50,6 +53,16 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  overlayBtnContainer: {
+    flexDirection: 'row',
+    marginVertical: 10,
+    alignSelf: 'center',
+  },
+  overlayBtn: {
+    width: windowWidth * 0.43,
+    height: 40,
+    marginHorizontal: windowWidth * 0.02,
   },
   buttonLabel: {
     paddingTop: 5,
@@ -119,8 +132,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginVertical: 8,
   },
+  imageBtnContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
   ResponseImage: {
-    marginVertical: 24,
+    marginVertical: 12,
     alignItems: 'center',
   },
   UploadSuccessContainer: {
@@ -129,9 +147,11 @@ const styles = StyleSheet.create({
   },
   inputInfoView: {
     backgroundColor: '#D4D4D4',
-    borderRadius: 30,
+    borderRadius: 5,
     height: 35,
-    marginBottom: 10,
+    width: '95%',
+    marginVertical: 5,
+    alignSelf: 'center',
   },
 });
 
@@ -410,6 +430,7 @@ const BlueprintScreen = () => {
         {
           uuid: info.uuid,
           floor: info.floor,
+          buildingName: info.buildingName,
           base64: response.assets[0].base64,
           imageHeight: response.assets[0].height,
           imageWidth: response.assets[0].width,
@@ -484,13 +505,15 @@ const BlueprintScreen = () => {
       setInfo({
         floor: null,
         uuid: '',
+        buildingName: '',
       });
     }
   }, []);
 
   const handleAccordionClick = index => {
     activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
-    if (index === 1) getBlueprints();
+    if (index === 0) setResponse(null);
+    else if (index === 1) getBlueprints();
   };
 
   const [visibleIndex, setVisibleIndex] = React.useState();
@@ -567,27 +590,42 @@ const BlueprintScreen = () => {
               <>
                 <View style={[styles.row, {justifyContent: 'center'}]}>
                   <Text style={{fontWeight: 'bold', marginBottom: 10}}>
-                    Select your blueprint's floor and type beacon uuid
+                    Select your blueprint's floor{'\n'}Type beacon uuid /
+                    buildng name
                   </Text>
-                  <NumericInput
-                    value={parseInt(info.floor, 10)}
-                    onChange={value => handleInfo('floor', value)}
-                    totalWidth={120}
-                    totalHeight={35}
-                    rounded
-                    iconStyle={{color: 'white'}}
-                    rightButtonBackgroundColor="#4f4f4f"
-                    leftButtonBackgroundColor="#a3a3a3"
-                  />
-                  <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                  <View style={{marginBottom: 5}}>
+                    <NumericInput
+                      value={parseInt(info.floor, 10)}
+                      onChange={value => handleInfo('floor', value)}
+                      totalWidth={windowWidth * 0.95}
+                      totalHeight={35}
+                      rounded
+                      iconStyle={{color: 'white'}}
+                      rightButtonBackgroundColor="#4f4f4f"
+                      leftButtonBackgroundColor="#a3a3a3"
+                    />
+                  </View>
+                  <View style={styles.inputInfoView}>
                     <TextInput
                       name="uuid"
                       key="uuid"
-                      style={[styles.TextInput, {width: 200}]}
+                      style={[styles.TextInput, {width: '100%'}]}
                       placeholder="Type beacon's uuid"
                       autoCorrect={false}
                       clearButtonMode="always"
                       onChangeText={value => handleInfo('uuid', value)}
+                      placeholderTextColor="#282828"
+                    />
+                  </View>
+                  <View style={styles.inputInfoView}>
+                    <TextInput
+                      name="buildingName"
+                      key="buildingName"
+                      style={[styles.TextInput, {width: '100%'}]}
+                      placeholder="Type building's Name"
+                      autoCorrect={false}
+                      clearButtonMode="always"
+                      onChangeText={value => handleInfo('buildingName', value)}
                       placeholderTextColor="#282828"
                     />
                   </View>
@@ -607,7 +645,7 @@ const BlueprintScreen = () => {
             )}
           </>
         );
-      // Uploaded Blueprint List
+      // Uploaded Blueprint List (fixable)
       case 1:
         return (
           <View>
@@ -615,27 +653,36 @@ const BlueprintScreen = () => {
               return (
                 <>
                   <Overlay
+                    overlayStyle={{
+                      width: windowWidth,
+                      height: windowHeight,
+                      justifyContent: 'center',
+                    }}
                     isVisible={visibleIndex === idx}
                     onBackdropPress={() => toggleOverlay(idx)}>
-                    <View style={[styles.row, {justifyContent: 'center'}]}>
-                      <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+                    <View style={[{justifyContent: 'center'}]}>
+                      {/* <Text style={{fontWeight: 'bold', marginBottom: 10}}>
                         Select your blueprint, blueprint's floor and type beacon
                         uuid, building name
-                      </Text>
+                      </Text> */}
                       {response &&
+                        response?.assets &&
                         response.assets[0] &&
                         response.assets[0].base64 !== undefined && (
                           <View style={styles.ResponseImage}>
                             <Image
                               resizeMode="contain"
-                              style={{width: 300, height: 300}}
+                              style={{
+                                width: windowWidth * 0.9,
+                                height: windowWidth * 0.9,
+                              }}
                               source={{
                                 uri: `data:image/jpeg;base64,${response.assets[0].base64}`,
                               }}
                             />
                           </View>
                         )}
-                      <View style={styles.uploadBtnContainer}>
+                      <View style={styles.imageBtnContainer}>
                         {actions.map(({title, type, options}) => {
                           return (
                             <UploadBtn
@@ -648,38 +695,71 @@ const BlueprintScreen = () => {
                           );
                         })}
                       </View>
-                      <NumericInput
-                        value={parseInt(info.floor, 10)}
-                        onChange={value => handleInfo('floor', value)}
-                      />
-                      <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                      <View style={{alignSelf: 'center', marginBottom: 10}}>
+                        <NumericInput
+                          value={parseInt(info.floor, 10)}
+                          onChange={value => handleInfo('floor', value)}
+                          totalWidth={windowWidth * 0.9}
+                          totalHeight={40}
+                          rounded
+                          iconStyle={{color: 'white'}}
+                          rightButtonBackgroundColor="#4f4f4f"
+                          leftButtonBackgroundColor="#a3a3a3"
+                        />
+                      </View>
+                      <View style={[styles.inputInfoView]}>
                         <TextInput
                           name="uuid"
                           key="uuid"
-                          style={[styles.TextInput, {width: 200}]}
+                          style={[styles.TextInput, {width: '100%'}]}
                           value={info.uuid}
+                          placeholder={item.uuid}
                           autoCorrect={false}
                           clearButtonMode="always"
                           onChangeText={value => handleInfo('uuid', value)}
-                          placeholderTextColor="#282828"
+                          placeholderTextColor="#6f6f6f"
                         />
                       </View>
-                      <View style={[styles.inputInfoView, {marginLeft: 10}]}>
+                      <View style={[styles.inputInfoView]}>
                         <TextInput
                           name="buildingName"
                           key="buildingName"
-                          style={[styles.TextInput, {width: 200}]}
+                          style={[styles.TextInput, {width: '100%'}]}
                           value={info.buildingName}
+                          placeholder={item.buildingName}
                           autoCorrect={false}
                           clearButtonMode="always"
                           onChangeText={value =>
                             handleInfo('buildingName', value)
                           }
-                          placeholderTextColor="#282828"
+                          placeholderTextColor="#6f6f6f"
                         />
                       </View>
                     </View>
-                    <Btn title="Update" onPress={() => toggleOverlay(idx)} />
+                    <View style={styles.overlayBtnContainer}>
+                      <Btn
+                        key="update"
+                        title="Update"
+                        buttonStyle={[
+                          styles.overlayBtn,
+                          {
+                            backgroundColor: 'green',
+                          },
+                        ]}
+                        onPress={() => toggleOverlay(idx)}
+                      />
+                      <Btn
+                        key="cancel"
+                        title="Cancel"
+                        buttonStyle={[
+                          styles.overlayBtn,
+                          {
+                            backgroundColor: 'red',
+                          },
+                        ]}
+                        onPress={() => toggleOverlay(idx)}
+                      />
+                    </View>
                   </Overlay>
 
                   <ListItem.Swipeable
