@@ -66,7 +66,7 @@ We are currently working on a fix.
 
 > Structure
 
-<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.jpg?raw=true" width="400"></p>
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.jpg?raw=true" width="600"></p>
 
 1. When the manager uploads a blueprint for each floor, the application converts it to a map.
 2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
@@ -108,7 +108,7 @@ We are currently working on a fix.
 
 <br>
 
-<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.jpg" width="400"></p>
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.jpg" width="700"></p>
 
 The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
 
@@ -144,7 +144,7 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 > ### 2. Diagram
 
-<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/server.jpg" width="400"></p>
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/server.jpg" width="700"></p>
 
 <br>
 
@@ -159,7 +159,7 @@ The database is largely composed of five tables: a beacon table storing ID and l
 
 > ### 1. System Overview
 
-<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg" width="400"></p>
+<p align="center"><img src="https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/IoT.jpg" width="700"></p>
 
     1. Install flame sensor and beacon indoors.
     2. When a fire is detected, the Nodemcu communicates with the server through the connected wifi.
