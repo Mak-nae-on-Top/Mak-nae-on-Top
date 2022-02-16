@@ -68,11 +68,11 @@ We are currently working on a fix.
 
 ![system](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/blob/main/Image/system.png?raw=true)
 
-    1. When the manager uploads a blueprint for each floor, the application converts it to a map.
-    2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
-    3. In peacetime, the application shows an optimized route to the destination that the user wants.
-    4. In the event of a fire, a fire alarm that is linked to the server notifies the server of the occurrence of the fire, and the server notifies the user of the fire through the application.
-    5. The application displays the fastest escape route from the current user location on the map considering the current population cluster.
+1. When the manager uploads a blueprint for each floor, the application converts it to a map.
+2. When the manager enters the name of each room, the user’s location data is obtained using bluetooth beacon.
+3. In peacetime, the application shows an optimized route to the destination that the user wants.
+4. In the event of a fire, a fire alarm that is linked to the server notifies the server of the occurrence of the fire, and the server notifies the user of the fire through the application.
+5. The application displays the fastest escape route from the current user location on the map considering the current population cluster.
 
 <br>
 <br>
@@ -110,9 +110,9 @@ We are currently working on a fix.
 
 ![algorithm](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/raw/main/Image/route.png)
 
-    The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
+The node that minimizes the cost from the start node to the current node g(n) is selected as the next search node.
 
-    The function h(n) that finds the expected cost from the current node to the target node is called the heuristic function, and the Manhattan equation is used here.
+The function h(n) that finds the expected cost from the current node to the target node is called the heuristic function, and the Manhattan equation is used here.
 
 <br>
 <br>
@@ -127,8 +127,8 @@ We are currently working on a fix.
 
 Using Tx Power (transmission strength) and RSSI (reception strength), the straight-line distance between a beacon and a smart device can be calculated. After installing at least 3 beacons, measure the indoor location by trilaterration.
 
-    1. Nodes A, B, and C are the locations where the beacon is installed, and D is the location (x,y) of the smart device.
-    2. The calculated distances from nodes A, B, and C to the smart devices are e, f, and g D, respectively, which is determined using the path loss model.
+1. Nodes A, B, and C are the locations where the beacon is installed, and D is the location (x,y) of the smart device.
+2. The calculated distances from nodes A, B, and C to the smart devices are e, f, and g D, respectively, which is determined using the path loss model.
 
 <br>
 <br>
@@ -149,9 +149,9 @@ Using Tx Power (transmission strength) and RSSI (reception strength), the straig
 
 <br>
 
-    The server uses the spring boot framework and Database uses MariaDB and are distributed through AWS.
-    The server receives the id of the beacon from the app and the distance between the user and the beacon through the http protocol. With this data, the server estimates the user's location using trilateration.
-    The database is largely composed of five tables: a beacon table storing ID and location information, a building table storing the name and manager of the building, a room table storing the name and location of the room, a population table storing users' locations, and a user table storing user information.
+The server uses the spring boot framework and Database uses MariaDB and are distributed through AWS.
+The server receives the id of the beacon from the app and the distance between the user and the beacon through the http protocol. With this data, the server estimates the user's location using trilateration.
+The database is largely composed of five tables: a beacon table storing ID and location information, a building table storing the name and manager of the building, a room table storing the name and location of the room, a population table storing users' locations, and a user table storing user information.
 
 <br>
 <br>
