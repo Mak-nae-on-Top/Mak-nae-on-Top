@@ -157,16 +157,12 @@ const RangingBeacon = () => {
   React.useEffect(() => {
     const getLocation = async () => {
       await axios
-        .post(
-          url + 'app/location',
-          rangedBeacons,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Device: deviceInfo,
-            },
+        .post(url + 'app/location', rangedBeacons, {
+          headers: {
+            'Content-Type': 'application/json',
+            Device: deviceInfo,
           },
-        )
+        })
         .then(response => {
           setLocation(response.data.locationList);
           setFloor(response.data.floor);
