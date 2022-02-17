@@ -28,6 +28,7 @@ import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
 import url from '../ServerURL/url';
+import TakeCoordinate from '../Components/Blueprint/TakeCoordinate';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -351,6 +352,21 @@ const LoginScreen = ({navigation}) => {
 const BlueprintScreen = () => {
   const {authContext, state} = React.useContext(AuthContext);
 
+  const [coordinatesInfo, setCoordinatesInfo] = React.useState([]);
+
+  const modifyCoordinate = ({info, idx}) => {
+    setCoordinatesInfo(info);
+    toggleOverlay2(idx);
+    // blueprints.map((item, index) => {
+    //   item.uuid === info.uuid && item.floor === info.floor && (
+    //     setBlueprints({
+    //       ...blueprints,
+
+    //     })
+    //   );
+    // })
+  };
+
   const [info, setInfo] = React.useState({
     floor: '',
     uuid: '',
@@ -502,7 +518,7 @@ const BlueprintScreen = () => {
         },
       )
       .then(response => {
-        // image url, floor, uuid, building name
+        // base64, floor, uuid, buildingName, image_width, image_height, blueprint_width, blueprint_height, coordinate (array)
         const allInformation = [];
         response.data.map(value => {
           allInformation.push(value);
@@ -541,10 +557,11 @@ const BlueprintScreen = () => {
   const handleAccordionClick = index => {
     activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
     if (index === 0) setResponse(null);
-    else if (index === 1) getBlueprints();
+    else if (index === 1 || index === 2) getBlueprints();
   };
 
   const [visibleIndex, setVisibleIndex] = React.useState();
+  const [visibleIndex2, setVisibleIndex2] = React.useState();
 
   const toggleOverlay = (item, idx) => {
     visibleIndex === idx && idx !== null
@@ -562,6 +579,12 @@ const BlueprintScreen = () => {
             },
           ],
         }));
+  };
+
+  const toggleOverlay2 = idx => {
+    visibleIndex2 === idx && idx !== null
+      ? setVisibleIndex2(null)
+      : setVisibleIndex2(idx);
   };
 
   const handleBlueprint = index => {
@@ -794,6 +817,7 @@ const BlueprintScreen = () => {
                     bottomDivider
                     leftContent={
                       <Btn
+                        key="modify"
                         title="Modify"
                         icon={{name: 'auto-fix-high', color: 'white'}}
                         buttonStyle={{
@@ -805,6 +829,7 @@ const BlueprintScreen = () => {
                     }
                     rightContent={
                       <Btn
+                        key="delete"
                         title="Delete"
                         icon={{name: 'delete', color: 'white'}}
                         buttonStyle={{
@@ -821,7 +846,12 @@ const BlueprintScreen = () => {
                     )}
                     <ListItem.Content style={{alignItems: 'center'}}>
                       <ListItem.Title>
-                        {item.buildingName + ' ' + item.floor + 'F'}
+                        {item.buildingName +
+                          ' ' +
+                          item.floor +
+                          'F' +
+                          '\n' +
+                          item.uuid}
                       </ListItem.Title>
                     </ListItem.Content>
                     <ListItem.Chevron />
@@ -833,7 +863,97 @@ const BlueprintScreen = () => {
         );
       // Taking the coordinates of each room.
       case 2:
-        return <></>;
+        return (
+          <View>
+            {blueprints.map((item, idx) => {
+              return (
+                <>
+                  <Overlay
+                    isVisible={visibleIndex2 === idx}
+                    onBackdropPress={() => toggleOverlay2(idx)}>
+                    <TakeCoordinate
+                      modifyCoordinate={() => modifyCoordinate()}
+                      item={item}
+                      idx={idx}
+                    />
+                    {/* <View style={styles.overlayBtnContainer}>
+                      <Btn
+                        key="update"
+                        title="Update"
+                        buttonStyle={[
+                          styles.overlayBtn,
+                          {
+                            backgroundColor: 'green',
+                          },
+                        ]}
+                        onPress={() => {
+                          // uploadBlueprint();
+                          toggleOverlay(idx);
+                          // getBlueprints();
+                        }}
+                      />
+                      <Btn
+                        key="cancel"
+                        title="Cancel"
+                        buttonStyle={[
+                          styles.overlayBtn,
+                          {
+                            backgroundColor: 'red',
+                          },
+                        ]}
+                        onPress={() => toggleOverlay(idx)}
+                      />
+                    </View> */}
+                  </Overlay>
+
+                  <ListItem.Swipeable
+                    bottomDivider
+                    leftContent={
+                      <Btn
+                        key="coordinate"
+                        title="Coordinate"
+                        icon={{name: 'push-pin', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'green',
+                        }}
+                        onPress={() => toggleOverlay2(idx)}
+                      />
+                    }
+                    rightContent={
+                      <Btn
+                        key="delete"
+                        title="Delete"
+                        icon={{name: 'delete', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'red',
+                        }}
+                        onPress={() => deleteBlueprint()}
+                      />
+                    }>
+                    {idx % 2 === 0 ? (
+                      <FontAwesome name="building-o" size={30} />
+                    ) : (
+                      <FontAwesome name="building" size={30} />
+                    )}
+                    <ListItem.Content style={{alignItems: 'center'}}>
+                      <ListItem.Title>
+                        {item.buildingName +
+                          ' ' +
+                          item.floor +
+                          'F' +
+                          '\n' +
+                          item.uuid}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <ListItem.Chevron />
+                  </ListItem.Swipeable>
+                </>
+              );
+            })}
+          </View>
+        );
       // List that needs to be fixed
       case 3:
         // todo : Get user's blueprint list that needs to be fixed from database
