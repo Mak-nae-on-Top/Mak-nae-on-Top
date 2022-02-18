@@ -352,25 +352,15 @@ const LoginScreen = ({navigation}) => {
 const BlueprintScreen = () => {
   const {authContext, state} = React.useContext(AuthContext);
 
-  const [coordinatesInfo, setCoordinatesInfo] = React.useState([]);
-
-  const modifyCoordinate = ({info, idx}) => {
-    setCoordinatesInfo(info);
+  const modifyCoordinate = (uuid, floor, coordinates, idx) => {
     toggleOverlay2(idx);
-    // blueprints.map((item, index) => {
-    //   item.uuid === info.uuid && item.floor === info.floor && (
-    //     setBlueprints({
-    //       ...blueprints,
-
-    //     })
-    //   );
-    // })
+    modifyCoordinates(uuid, floor, coordinates);
   };
 
   const [info, setInfo] = React.useState({
     floor: '',
     uuid: '',
-    buildingName: '',
+    building_name: '',
   });
 
   const handleInfo = (key, value) => {
@@ -443,11 +433,11 @@ const BlueprintScreen = () => {
     },
   ];
 
-  const deleteBlueprint = async () => {
+  const deleteBlueprint = async item => {
     await axios
       .post(
         url + 'app/manager/deleteFloor',
-        {uuid: info.uuid, floor: info.floor},
+        {uuid: item.uuid, floor: item.floor},
         {
           headers: {
             Authorization: `Bearer ${state.userToken}`,
@@ -474,10 +464,10 @@ const BlueprintScreen = () => {
         {
           uuid: info.uuid,
           floor: info.floor,
-          buildingName: info.buildingName,
+          building_name: info.building_name,
           base64: response.assets[0].base64,
-          imageHeight: response.assets[0].height,
-          imageWidth: response.assets[0].width,
+          image_height: response.assets[0].height,
+          image_width: response.assets[0].width,
         },
         {
           headers: {
@@ -504,6 +494,34 @@ const BlueprintScreen = () => {
       });
   };
 
+  const modifyCoordinates = async (uuid, floor, coordinates) => {
+    await axios
+      .post(
+        url + 'app/manager/modifyCoordinates',
+        {
+          uuid: uuid,
+          floor: floor,
+          coordinates: coordinates,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        if (response.data.status === 'success') {
+          getBlueprints();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
+
   const getBlueprints = async () => {
     await axios
       .post(
@@ -521,6 +539,7 @@ const BlueprintScreen = () => {
         // base64, floor, uuid, buildingName, image_width, image_height, blueprint_width, blueprint_height, coordinate (array)
         const allInformation = [];
         response.data.map(value => {
+          console.log(value.coordinate);
           allInformation.push(value);
         });
         allInformation !== blueprints && setBlueprints(allInformation);
@@ -549,7 +568,7 @@ const BlueprintScreen = () => {
       setInfo({
         floor: null,
         uuid: '',
-        buildingName: '',
+        building_name: '',
       });
     }
   }, []);
@@ -570,7 +589,7 @@ const BlueprintScreen = () => {
         setInfo({
           floor: item.floor,
           uuid: item.uuid,
-          buildingName: item.buildingName,
+          building_name: item.building_name,
         }),
         setResponse({
           assets: [
@@ -607,7 +626,7 @@ const BlueprintScreen = () => {
 
             {/* Json response */}
             {/* <UploadResponse>{response}</UploadResponse> */}
-            {/* {console.log(response)} */}
+            {console.log(response)}
 
             {/* Images that user choose */}
             {response && response?.assets && response?.assets !== undefined && (
@@ -670,13 +689,13 @@ const BlueprintScreen = () => {
                   </View>
                   <View style={styles.inputInfoView}>
                     <TextInput
-                      name="buildingName"
-                      key="buildingName"
+                      name="building_name"
+                      key="building_name"
                       style={[styles.TextInput, {width: '100%'}]}
                       placeholder="Type building's Name"
                       autoCorrect={false}
                       clearButtonMode="always"
-                      onChangeText={value => handleInfo('buildingName', value)}
+                      onChangeText={value => handleInfo('building_name', value)}
                       placeholderTextColor="#282828"
                     />
                   </View>
@@ -769,15 +788,15 @@ const BlueprintScreen = () => {
                       </View>
                       <View style={[styles.inputInfoView]}>
                         <TextInput
-                          name="buildingName"
-                          key="buildingName"
+                          name="building_name"
+                          key="building_name"
                           style={[styles.TextInput, {width: '100%'}]}
-                          value={info.buildingName}
-                          placeholder={item.buildingName}
+                          value={info.building_name}
+                          placeholder={item.building_name}
                           autoCorrect={false}
                           clearButtonMode="always"
                           onChangeText={value =>
-                            handleInfo('buildingName', value)
+                            handleInfo('building_name', value)
                           }
                           placeholderTextColor="#6f6f6f"
                         />
@@ -836,7 +855,7 @@ const BlueprintScreen = () => {
                           minHeight: '100%',
                           backgroundColor: 'red',
                         }}
-                        onPress={() => deleteBlueprint()}
+                        onPress={() => deleteBlueprint(item)}
                       />
                     }>
                     {idx % 2 === 0 ? (
@@ -846,7 +865,7 @@ const BlueprintScreen = () => {
                     )}
                     <ListItem.Content style={{alignItems: 'center'}}>
                       <ListItem.Title>
-                        {item.buildingName +
+                        {item.building_name +
                           ' ' +
                           item.floor +
                           'F' +
@@ -872,38 +891,11 @@ const BlueprintScreen = () => {
                     isVisible={visibleIndex2 === idx}
                     onBackdropPress={() => toggleOverlay2(idx)}>
                     <TakeCoordinate
-                      modifyCoordinate={() => modifyCoordinate()}
+                      modifyCoordinate={modifyCoordinate}
+                      toggleOverlay2={toggleOverlay2}
                       item={item}
                       idx={idx}
                     />
-                    {/* <View style={styles.overlayBtnContainer}>
-                      <Btn
-                        key="update"
-                        title="Update"
-                        buttonStyle={[
-                          styles.overlayBtn,
-                          {
-                            backgroundColor: 'green',
-                          },
-                        ]}
-                        onPress={() => {
-                          // uploadBlueprint();
-                          toggleOverlay(idx);
-                          // getBlueprints();
-                        }}
-                      />
-                      <Btn
-                        key="cancel"
-                        title="Cancel"
-                        buttonStyle={[
-                          styles.overlayBtn,
-                          {
-                            backgroundColor: 'red',
-                          },
-                        ]}
-                        onPress={() => toggleOverlay(idx)}
-                      />
-                    </View> */}
                   </Overlay>
 
                   <ListItem.Swipeable
@@ -929,7 +921,7 @@ const BlueprintScreen = () => {
                           minHeight: '100%',
                           backgroundColor: 'red',
                         }}
-                        onPress={() => deleteBlueprint()}
+                        onPress={() => deleteBlueprint(item)}
                       />
                     }>
                     {idx % 2 === 0 ? (
@@ -939,7 +931,7 @@ const BlueprintScreen = () => {
                     )}
                     <ListItem.Content style={{alignItems: 'center'}}>
                       <ListItem.Title>
-                        {item.buildingName +
+                        {item.building_name +
                           ' ' +
                           item.floor +
                           'F' +
