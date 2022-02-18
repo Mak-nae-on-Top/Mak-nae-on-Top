@@ -352,19 +352,9 @@ const LoginScreen = ({navigation}) => {
 const BlueprintScreen = () => {
   const {authContext, state} = React.useContext(AuthContext);
 
-  const [coordinatesInfo, setCoordinatesInfo] = React.useState([]);
-
-  const modifyCoordinate = ({info, idx}) => {
-    setCoordinatesInfo(info);
+  const modifyCoordinate = (uuid, floor, coordinates, idx) => {
     toggleOverlay2(idx);
-    // blueprints.map((item, index) => {
-    //   item.uuid === info.uuid && item.floor === info.floor && (
-    //     setBlueprints({
-    //       ...blueprints,
-
-    //     })
-    //   );
-    // })
+    modifyCoordinates(uuid, floor, coordinates);
   };
 
   const [info, setInfo] = React.useState({
@@ -504,6 +494,34 @@ const BlueprintScreen = () => {
       });
   };
 
+  const modifyCoordinates = async (uuid, floor, coordinates) => {
+    await axios
+      .post(
+        url + 'app/manager/modifyCoordinates',
+        {
+          uuid: uuid,
+          floor: floor,
+          coordinates: coordinates,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        if (response.data.status === 'success') {
+          getBlueprints();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
+
   const getBlueprints = async () => {
     await axios
       .post(
@@ -521,6 +539,7 @@ const BlueprintScreen = () => {
         // base64, floor, uuid, buildingName, image_width, image_height, blueprint_width, blueprint_height, coordinate (array)
         const allInformation = [];
         response.data.map(value => {
+          console.log(value.coordinate);
           allInformation.push(value);
         });
         allInformation !== blueprints && setBlueprints(allInformation);
@@ -872,7 +891,8 @@ const BlueprintScreen = () => {
                     isVisible={visibleIndex2 === idx}
                     onBackdropPress={() => toggleOverlay2(idx)}>
                     <TakeCoordinate
-                      modifyCoordinate={() => modifyCoordinate()}
+                      modifyCoordinate={modifyCoordinate}
+                      toggleOverlay2={toggleOverlay2}
                       item={item}
                       idx={idx}
                     />
