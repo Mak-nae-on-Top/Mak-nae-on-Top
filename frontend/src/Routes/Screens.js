@@ -360,7 +360,7 @@ const BlueprintScreen = () => {
   const [info, setInfo] = React.useState({
     floor: '',
     uuid: '',
-    buildingName: '',
+    building_name: '',
   });
 
   const handleInfo = (key, value) => {
@@ -464,10 +464,10 @@ const BlueprintScreen = () => {
         {
           uuid: info.uuid,
           floor: info.floor,
-          buildingName: info.buildingName,
+          building_name: info.building_name,
           base64: response.assets[0].base64,
-          imageHeight: response.assets[0].height,
-          imageWidth: response.assets[0].width,
+          image_height: response.assets[0].height,
+          image_width: response.assets[0].width,
         },
         {
           headers: {
@@ -568,7 +568,7 @@ const BlueprintScreen = () => {
       setInfo({
         floor: null,
         uuid: '',
-        buildingName: '',
+        building_name: '',
       });
     }
   }, []);
@@ -589,7 +589,7 @@ const BlueprintScreen = () => {
         setInfo({
           floor: item.floor,
           uuid: item.uuid,
-          buildingName: item.buildingName,
+          building_name: item.building_name,
         }),
         setResponse({
           assets: [
@@ -626,7 +626,7 @@ const BlueprintScreen = () => {
 
             {/* Json response */}
             {/* <UploadResponse>{response}</UploadResponse> */}
-            {/* {console.log(response)} */}
+            {console.log(response)}
 
             {/* Images that user choose */}
             {response && response?.assets && response?.assets !== undefined && (
@@ -689,13 +689,13 @@ const BlueprintScreen = () => {
                   </View>
                   <View style={styles.inputInfoView}>
                     <TextInput
-                      name="buildingName"
-                      key="buildingName"
+                      name="building_name"
+                      key="building_name"
                       style={[styles.TextInput, {width: '100%'}]}
                       placeholder="Type building's Name"
                       autoCorrect={false}
                       clearButtonMode="always"
-                      onChangeText={value => handleInfo('buildingName', value)}
+                      onChangeText={value => handleInfo('building_name', value)}
                       placeholderTextColor="#282828"
                     />
                   </View>
@@ -788,15 +788,15 @@ const BlueprintScreen = () => {
                       </View>
                       <View style={[styles.inputInfoView]}>
                         <TextInput
-                          name="buildingName"
-                          key="buildingName"
+                          name="building_name"
+                          key="building_name"
                           style={[styles.TextInput, {width: '100%'}]}
-                          value={info.buildingName}
-                          placeholder={item.buildingName}
+                          value={info.building_name}
+                          placeholder={item.building_name}
                           autoCorrect={false}
                           clearButtonMode="always"
                           onChangeText={value =>
-                            handleInfo('buildingName', value)
+                            handleInfo('building_name', value)
                           }
                           placeholderTextColor="#6f6f6f"
                         />
@@ -865,7 +865,7 @@ const BlueprintScreen = () => {
                     )}
                     <ListItem.Content style={{alignItems: 'center'}}>
                       <ListItem.Title>
-                        {item.buildingName +
+                        {item.building_name +
                           ' ' +
                           item.floor +
                           'F' +
@@ -931,7 +931,7 @@ const BlueprintScreen = () => {
                     )}
                     <ListItem.Content style={{alignItems: 'center'}}>
                       <ListItem.Title>
-                        {item.buildingName +
+                        {item.building_name +
                           ' ' +
                           item.floor +
                           'F' +
