@@ -433,11 +433,11 @@ const BlueprintScreen = () => {
     },
   ];
 
-  const deleteBlueprint = async () => {
+  const deleteBlueprint = async item => {
     await axios
       .post(
         url + 'app/manager/deleteFloor',
-        {uuid: info.uuid, floor: info.floor},
+        {uuid: item.uuid, floor: item.floor},
         {
           headers: {
             Authorization: `Bearer ${state.userToken}`,
@@ -855,7 +855,7 @@ const BlueprintScreen = () => {
                           minHeight: '100%',
                           backgroundColor: 'red',
                         }}
-                        onPress={() => deleteBlueprint()}
+                        onPress={() => deleteBlueprint(item)}
                       />
                     }>
                     {idx % 2 === 0 ? (
@@ -896,34 +896,6 @@ const BlueprintScreen = () => {
                       item={item}
                       idx={idx}
                     />
-                    {/* <View style={styles.overlayBtnContainer}>
-                      <Btn
-                        key="update"
-                        title="Update"
-                        buttonStyle={[
-                          styles.overlayBtn,
-                          {
-                            backgroundColor: 'green',
-                          },
-                        ]}
-                        onPress={() => {
-                          // uploadBlueprint();
-                          toggleOverlay(idx);
-                          // getBlueprints();
-                        }}
-                      />
-                      <Btn
-                        key="cancel"
-                        title="Cancel"
-                        buttonStyle={[
-                          styles.overlayBtn,
-                          {
-                            backgroundColor: 'red',
-                          },
-                        ]}
-                        onPress={() => toggleOverlay(idx)}
-                      />
-                    </View> */}
                   </Overlay>
 
                   <ListItem.Swipeable
@@ -949,7 +921,7 @@ const BlueprintScreen = () => {
                           minHeight: '100%',
                           backgroundColor: 'red',
                         }}
-                        onPress={() => deleteBlueprint()}
+                        onPress={() => deleteBlueprint(item)}
                       />
                     }>
                     {idx % 2 === 0 ? (
