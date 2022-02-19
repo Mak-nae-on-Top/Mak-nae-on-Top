@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {StyleSheet, Text, View, NativeEventEmitter} from 'react-native';
+import ImageSize from 'react-native-image-size';
 
 import Kontakt, {KontaktModule} from 'react-native-kontaktio';
 import {regionSample, GetUuid} from './GetUuid';
 import axios from 'axios';
 
 import BeaconApiKey from './BeaconApiKey';
-import url from '../../ServerURL/url';
+import {Url, SocketUrl} from '../../ServerURL/url';
 import deviceInfo from '../GetDevice';
 import DrawMap from './DrawMap';
 
@@ -24,6 +25,9 @@ const kontaktEmitter = new NativeEventEmitter(KontaktModule);
 const region1 = regionSample;
 
 const RangingBeacon = () => {
+  const ws = React.useRef(null);
+  const [isFired, setIsFired] = React.useState(false);
+
   const [ranging, setRanging] = React.useState(false);
   const [rangedBeacons, setRangedBeacons] = React.useState([]);
   const [rangedRegions, setRangedRegions] = React.useState([]);
@@ -139,11 +143,19 @@ const RangingBeacon = () => {
       },
     );
 
+    // connect to web socket server
+    ws.current = new WebSocket(SocketUrl);
+    ws.current.onopen = () => {
+      console.log('open');
+      // ws.current.send(JSON.stringify({uuid: 'testuuid', type: 'ENTER'}));
+    };
+
     //Beacon event remove
     return () => {
       regionRangeEvent.remove();
       regionRangeFailEvent.remove();
       authEvent.remove();
+      ws.current.close();
     };
   }, []);
 
@@ -157,16 +169,22 @@ const RangingBeacon = () => {
   React.useEffect(() => {
     const getLocation = async () => {
       await axios
-        .post(url + 'app/location', rangedBeacons, {
+        .post(Url + 'app/location', rangedBeacons, {
           headers: {
             'Content-Type': 'application/json',
             Device: deviceInfo,
           },
         })
         .then(response => {
-          setLocation(response.data.locationList);
-          setFloor(response.data.floor);
-          setUuid(response.data.uuid);
+          if (response.data.status === 'success') {
+            setLocation(response.data.location_list);
+            setFloor(response.data.floor);
+            setUuid(response.data.uuid);
+          } else {
+            setLocation([]);
+            setFloor(null);
+            setUuid(null);
+          }
         })
         .catch(error => {
           console.log(error);
@@ -181,7 +199,7 @@ const RangingBeacon = () => {
     const loadBlueprint = async () => {
       await axios
         .post(
-          url + 'app/loadMap',
+          Url + 'app/loadMap',
           {uuid: uuid, floor: floor},
           {
             headers: {
@@ -192,15 +210,14 @@ const RangingBeacon = () => {
         .then(response => {
           response.data.status === 'success' &&
             (setBlueprint(`data:image/jpeg;base64,${response.data.base64}`),
-            setBlueprintSize({
-              ...blueprintSize,
-              width: response.data.blueprint_width,
-              height: response.data.blueprint_height,
-            }),
-            setImageSize({
-              ...imageSize,
-              width: response.data.image_width,
-              height: response.data.image_height,
+            ImageSize.getSize(
+              `data:image/jpeg;base64,${response.data.base64}`,
+            ).then(size => {
+              setBlueprintSize({
+                ...blueprintSize,
+                width: size.width,
+                height: size.height,
+              });
             }));
         })
         .catch(error => {
@@ -209,16 +226,50 @@ const RangingBeacon = () => {
         });
     };
     // load blueprint when floor & uuid is not null
-    floor !== null && uuid !== null && loadBlueprint();
+    // send data to web socket server (case 1 : in the building / case 2 : not in the building)
+    floor !== null && uuid !== null
+      ? (loadBlueprint(), sendToWS({uuid: uuid, type: 'ENTER'}))
+      : (setBlueprint(null), sendToWS({type: 'EXIT'}));
   }, [floor, uuid]);
+
+  const sendToWS = ({data}) => {
+    try {
+      const {isConnecting, isConnected} = this.state;
+      // stop if connecting
+      if (isConnecting) {
+        return Promise.resolve(false);
+      }
+      // socket connection is required
+      if (!ws.current || !isConnected) {
+        // start connecting
+        ws.current.connect();
+        // resolve with false
+        return Promise.resolve(false);
+      }
+      ws.current.send(JSON.stringify(data));
+      // resolve with true;
+      return Promise.resolve(true);
+    } catch (error) {
+      // Handle error
+      return Promise.resolve(false);
+    }
+  };
+
+  React.useEffect(() => {
+    const communicateWithWS = () => {
+      ws.current.onmessage = e => {
+        console.log('message');
+        console.log(e.data);
+        e.data === 'fire' ? setIsFired(true) : setIsFired(false);
+      };
+    };
+    blueprint !== null && communicateWithWS();
+  }, [blueprint]);
 
   if (
     blueprintSize.width === '' ||
     blueprintSize.height === '' ||
-    imageSize.width === '' ||
-    imageSize.height === '' ||
-    location[0].x === '' ||
-    location[0].y === ''
+    location === []
   )
     return <></>;
   return (
@@ -227,7 +278,7 @@ const RangingBeacon = () => {
         location={location}
         blueprint={blueprint}
         blueprintSize={blueprintSize}
-        imageSize={imageSize}
+        isFired={isFired}
       />
     </>
   );

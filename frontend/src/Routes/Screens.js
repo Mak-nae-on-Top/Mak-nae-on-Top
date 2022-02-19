@@ -4,30 +4,25 @@ import {
   View,
   Text,
   SafeAreaView,
-  Button,
   TouchableOpacity,
   Dimensions,
-  Animated,
   Image,
   TextInput,
+  ScrollView,
 } from 'react-native';
 import {ListItem, Icon, Overlay, Button as Btn} from 'react-native-elements';
 import 'react-native-gesture-handler';
-import {Searchbar} from 'react-native-paper';
-import SlidingUpPanel from 'rn-sliding-up-panel';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NumericInput from 'react-native-numeric-input';
 import axios from 'axios';
 
-import bar from '../images/Bar.png';
 import logo from '../images/Logo.png';
 import Beacon from '../Components/Beacon/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
-import url from '../ServerURL/url';
+import {Url} from '../ServerURL/url';
 import TakeCoordinate from '../Components/Blueprint/TakeCoordinate';
 
 const windowHeight = Dimensions.get('window').height;
@@ -64,29 +59,6 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.43,
     height: 40,
     marginHorizontal: windowWidth * 0.02,
-  },
-  buttonLabel: {
-    paddingTop: 5,
-    paddingBottom: 5,
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#282828',
-    textAlign: 'center',
-  },
-  padding: {
-    padding: 10,
-    paddingTop: 20,
-  },
-  searchBar: {
-    width: '90%',
-    alignSelf: 'center',
-  },
-  PanelContainer: {
-    flex: 1,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
   },
   inputView: {
     backgroundColor: '#D4D4D4',
@@ -157,90 +129,6 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = ({locationEnabled}) => {
-  // panel contents
-  const windowHeight = Dimensions.get('window').height;
-  const defaultProps = {
-    draggableRange: {top: windowHeight - 100, bottom: 0},
-  };
-  const {top, bottom} = defaultProps.draggableRange;
-  const [draggedValue] = React.useState(() => new Animated.Value(0));
-
-  const closePanel = () => {
-    draggedValue.setValue(0);
-  };
-
-  const handleExitBtn = () => {
-    closePanel();
-  };
-
-  const handleToiletBtn = () => {
-    closePanel();
-  };
-  const handleFireExtingiuisherBtn = () => {
-    closePanel();
-  };
-  const handleDefibrillatorBtn = () => {
-    closePanel();
-  };
-
-  const clickOnSearchBar = () => {
-    draggedValue.setValue(top);
-  };
-
-  const PanelContent = () => {
-    const [searchQuery, setSearchQuery] = React.useState('');
-
-    const onChangeSearch = query => setSearchQuery(query);
-    return (
-      <>
-        <View>
-          <Image
-            source={bar}
-            style={{
-              borderRadius: 10,
-              tintColor: '#707070',
-              marginTop: 6,
-              height: 5,
-              width: 50,
-            }}
-          />
-        </View>
-        <View style={styles.padding}>
-          <View style={styles.row}>
-            <TouchableOpacity style={styles.PanelBtn} onPress={handleExitBtn}>
-              <MaterialCommunityIcons name="exit-run" size={60} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.PanelBtn} onPress={handleToiletBtn}>
-              <MaterialCommunityIcons name="human-male-female" size={60} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.PanelBtn}
-              onPress={handleFireExtingiuisherBtn}>
-              <FontAwesome
-                name="fire-extinguisher"
-                size={60}
-                style={{marginLeft: 5, marginRight: 5}}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.PanelBtn}
-              onPress={handleDefibrillatorBtn}>
-              <FontAwesome name="heartbeat" size={60} />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.searchBar}>
-          <Searchbar
-            placeholder="Type your destination"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            onFocus={clickOnSearchBar}
-          />
-        </View>
-      </>
-    );
-  };
-
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
@@ -258,22 +146,6 @@ const HomeScreen = ({locationEnabled}) => {
           </>
         )}
       </View>
-      <Button
-        color="black"
-        title="🔍 Click to search"
-        onPress={() => this._panel.show(220)}
-      />
-      <SlidingUpPanel
-        snappingPoints={[220, top]}
-        animatedValue={draggedValue}
-        draggableRange={{top: top, bottom: bottom}}
-        onBackButtonPress="true"
-        containerStyle={styles.PanelContainer}
-        height={windowHeight - 100}
-        friction={5}
-        ref={c => (this._panel = c)}>
-        <PanelContent />
-      </SlidingUpPanel>
     </SafeAreaView>
   );
 };
@@ -436,7 +308,7 @@ const BlueprintScreen = () => {
   const deleteBlueprint = async item => {
     await axios
       .post(
-        url + 'app/manager/deleteFloor',
+        Url + 'app/manager/deleteFloor',
         {uuid: item.uuid, floor: item.floor},
         {
           headers: {
@@ -460,7 +332,7 @@ const BlueprintScreen = () => {
   const uploadBlueprint = async () => {
     await axios
       .post(
-        url + 'app/manager/saveMap',
+        Url + 'app/manager/saveMap',
         {
           uuid: info.uuid,
           floor: info.floor,
@@ -478,7 +350,6 @@ const BlueprintScreen = () => {
         },
       )
       .then(response => {
-        alert(response.data.message);
         if (response.data.status === 'success') {
           setUploadSuccess(true);
           setResponse(null);
@@ -497,7 +368,7 @@ const BlueprintScreen = () => {
   const modifyCoordinates = async (uuid, floor, coordinates) => {
     await axios
       .post(
-        url + 'app/manager/modifyCoordinates',
+        Url + 'app/manager/modifyCoordinates',
         {
           uuid: uuid,
           floor: floor,
@@ -525,7 +396,7 @@ const BlueprintScreen = () => {
   const getBlueprints = async () => {
     await axios
       .post(
-        url + 'app/manager/loadAllMap',
+        Url + 'app/manager/loadAllMap',
         {},
         {
           headers: {
@@ -539,7 +410,6 @@ const BlueprintScreen = () => {
         // base64, floor, uuid, buildingName, image_width, image_height, blueprint_width, blueprint_height, coordinate (array)
         const allInformation = [];
         response.data.map(value => {
-          console.log(value.coordinate);
           allInformation.push(value);
         });
         allInformation !== blueprints && setBlueprints(allInformation);
@@ -550,16 +420,16 @@ const BlueprintScreen = () => {
       });
   };
 
-  const handleGetBlueprintBtn = React.useCallback((type, options) => {
+  const handleGetBlueprintBtn = (type, options) => {
     if (type === 'capture') {
       launchCamera(options, setResponse);
     } else {
       launchImageLibrary(options, setResponse);
     }
     setUploadSuccess(false);
-  }, []);
+  };
 
-  const handleChosenBlueprintBtn = React.useCallback(type => {
+  const handleChosenBlueprintBtn = type => {
     if (type === 'upload') {
       uploadBlueprint();
     } else {
@@ -571,7 +441,7 @@ const BlueprintScreen = () => {
         building_name: '',
       });
     }
-  }, []);
+  };
 
   const handleAccordionClick = index => {
     activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
@@ -626,7 +496,7 @@ const BlueprintScreen = () => {
 
             {/* Json response */}
             {/* <UploadResponse>{response}</UploadResponse> */}
-            {console.log(response)}
+            {/* {console.log(response)} */}
 
             {/* Images that user choose */}
             {response && response?.assets && response?.assets !== undefined && (
@@ -946,6 +816,7 @@ const BlueprintScreen = () => {
             })}
           </View>
         );
+      //특정 비콘 앞에서 일정 시간 동안 서있음 (비콘의 좌표나 major, minor)
       // List that needs to be fixed
       case 3:
         // todo : Get user's blueprint list that needs to be fixed from database
@@ -958,7 +829,7 @@ const BlueprintScreen = () => {
   // getBlueprints();
   return (
     <SafeAreaView flex={1}>
-      <View style={styles.AccList}>
+      <ScrollView style={styles.AccList}>
         {accordionList.map((item, index) => {
           return (
             <ListItem.Accordion
@@ -983,7 +854,7 @@ const BlueprintScreen = () => {
             </ListItem.Accordion>
           );
         })}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
