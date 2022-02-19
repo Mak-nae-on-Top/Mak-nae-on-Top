@@ -12,7 +12,7 @@ import * as Keychain from 'react-native-keychain';
 
 import {HomeStack, AuthStack, BlueprintStack} from './Stacks';
 
-import url from '../ServerURL/url';
+import {Url} from '../ServerURL/url';
 
 export const AuthContext = React.createContext();
 
@@ -176,7 +176,7 @@ const SideBar = () => {
         const {id, password} = data;
         await axios
           .post(
-            url + 'app/login',
+            Url + 'app/login',
             {id: id, password: password},
             {
               headers: {
@@ -200,7 +200,7 @@ const SideBar = () => {
         //not connected with server yet.
         // await axios
         //   .post(
-        //     url + 'app/logout',
+        //     Url + 'app/logout',
         //     {
         //       id: state.id,
         //       token: state.userToken,
@@ -226,7 +226,7 @@ const SideBar = () => {
         const {id, password, confirmPassword, name} = data;
         await axios
           .post(
-            url + 'app/join',
+            Url + 'app/join',
             {
               id: id,
               password: password,

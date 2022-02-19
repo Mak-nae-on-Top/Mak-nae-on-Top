@@ -2,26 +2,28 @@ import * as React from 'react';
 import {Image, View, Dimensions} from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import Svg, {Circle} from 'react-native-svg';
+import BottomBar from '../BottomBar';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
-const DrawMap = ({location, blueprint, blueprintSize, imageSize}) => {
+const DrawMap = ({location, blueprint, blueprintSize, isFired}) => {
   if (blueprint === null) return <></>;
-  const ratio = windowHeight / Number(imageSize.height);
+  const ratio = windowHeight / Number(blueprintSize.height);
   return (
     <>
+      <BottomBar />
       <ImageZoom
         cropWidth={windowWidth}
         cropHeight={windowHeight}
-        imageWidth={Number(imageSize.width) * ratio}
+        imageWidth={Number(blueprintSize.width) * ratio}
         imageHeight={windowHeight}
         minScale={1}
         enableCenterFocus={false}>
         <View style={{position: 'absolute', zIndex: 1}}>
           <Image
             style={{
-              width: Number(imageSize.width) * ratio,
+              width: Number(blueprintSize.width) * ratio,
               height: windowHeight,
             }}
             source={{uri: blueprint}}
@@ -70,6 +72,9 @@ const DrawMap = ({location, blueprint, blueprintSize, imageSize}) => {
                 />
               );
             })}
+            {/* isFired === true, draw emergency route
+            isFired === false, draw route when point are exist */}
+            {isFired ? <></> : <></>}
           </Svg>
         </View>
       </ImageZoom>
