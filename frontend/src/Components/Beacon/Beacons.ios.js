@@ -143,19 +143,11 @@ const RangingBeacon = () => {
       },
     );
 
-    // connect to web socket server
-    ws.current = new WebSocket(SocketUrl);
-    ws.current.onopen = () => {
-      console.log('open');
-      // ws.current.send(JSON.stringify({uuid: 'testuuid', type: 'ENTER'}));
-    };
-
     //Beacon event remove
     return () => {
       regionRangeEvent.remove();
       regionRangeFailEvent.remove();
       authEvent.remove();
-      ws.current.close();
     };
   }, []);
 
@@ -232,27 +224,30 @@ const RangingBeacon = () => {
       : (setBlueprint(null), sendToWS({type: 'EXIT'}));
   }, [floor, uuid]);
 
-  const sendToWS = ({data}) => {
-    try {
-      const {isConnecting, isConnected} = this.state;
-      // stop if connecting
-      if (isConnecting) {
+  const sendToWS = data => {
+    // connect to web socket server
+    ws.current = new WebSocket(SocketUrl);
+    ws.current.onopen = () => {
+      console.log('open');
+      try {
+        // socket connection is required
+        if (!ws.current) {
+          // start connecting
+          ws.current.connect();
+          // resolve with false
+          return Promise.resolve(false);
+        }
+        ws.current.send(JSON.stringify(data));
+        // resolve with true;
+        return Promise.resolve(true);
+      } catch (error) {
+        // Handle error
         return Promise.resolve(false);
       }
-      // socket connection is required
-      if (!ws.current || !isConnected) {
-        // start connecting
-        ws.current.connect();
-        // resolve with false
-        return Promise.resolve(false);
-      }
-      ws.current.send(JSON.stringify(data));
-      // resolve with true;
-      return Promise.resolve(true);
-    } catch (error) {
-      // Handle error
-      return Promise.resolve(false);
-    }
+    };
+    return () => {
+      ws.current.close();
+    };
   };
 
   React.useEffect(() => {
@@ -260,7 +255,7 @@ const RangingBeacon = () => {
       ws.current.onmessage = e => {
         console.log('message');
         console.log(e.data);
-        e.data === 'fire' ? setIsFired(true) : setIsFired(false);
+        e.data === 'Fire!' ? setIsFired(true) : setIsFired(false);
       };
     };
     blueprint !== null && communicateWithWS();
