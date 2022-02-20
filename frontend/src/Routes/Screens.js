@@ -24,6 +24,7 @@ import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/SideBar';
 import {Url} from '../ServerURL/url';
 import TakeCoordinate from '../Components/Blueprint/TakeCoordinate';
+import SetBeaconInfos from '../Components/Beacon/SetBeaconInfos';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -229,6 +230,11 @@ const BlueprintScreen = () => {
     modifyCoordinates(uuid, floor, coordinates);
   };
 
+  const modifyBeaconInfos = (uuid, floor, beaconInfo, idx) => {
+    toggleOverlay3(idx);
+    enterBeaconLocation(uuid, floor, beaconInfo);
+  };
+
   const [info, setInfo] = React.useState({
     floor: '',
     uuid: '',
@@ -263,8 +269,8 @@ const BlueprintScreen = () => {
       iconName: 'push-pin',
     },
     {
-      title: 'Needs to be fixed',
-      iconName: 'warning',
+      title: 'Set location of beacon',
+      iconName: 'location',
     },
   ];
 
@@ -393,6 +399,34 @@ const BlueprintScreen = () => {
       });
   };
 
+  const enterBeaconLocation = async (uuid, floor, beaconInfo) => {
+    await axios
+      .post(
+        Url + 'app/manager/enterBeaconLocation',
+        {
+          uuid: uuid,
+          floor: floor,
+          beaconInfo: beaconInfo,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        if (response.data.status === 'success') {
+          getBlueprints();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
+
   const getBlueprints = async () => {
     await axios
       .post(
@@ -451,6 +485,7 @@ const BlueprintScreen = () => {
 
   const [visibleIndex, setVisibleIndex] = React.useState();
   const [visibleIndex2, setVisibleIndex2] = React.useState();
+  const [visibleIndex3, setVisibleIndex3] = React.useState();
 
   const toggleOverlay = (item, idx) => {
     visibleIndex === idx && idx !== null
@@ -474,6 +509,12 @@ const BlueprintScreen = () => {
     visibleIndex2 === idx && idx !== null
       ? setVisibleIndex2(null)
       : setVisibleIndex2(idx);
+  };
+
+  const toggleOverlay3 = idx => {
+    toggleOverlay3 === idx && idx !== null
+      ? setVisibleIndex3(null)
+      : setVisibleIndex3(idx);
   };
 
   const handleBlueprint = index => {
@@ -816,11 +857,73 @@ const BlueprintScreen = () => {
             })}
           </View>
         );
-      //특정 비콘 앞에서 일정 시간 동안 서있음 (비콘의 좌표나 major, minor)
-      // List that needs to be fixed
+      // todo: 특정 비콘 앞에서 일정 시간 동안 서있음 (비콘의 좌표나 major, minor)
+      // set beacon's location for each floor
       case 3:
-        // todo : Get user's blueprint list that needs to be fixed from database
-        break;
+        return (
+          <View>
+            {blueprints.map((item, idx) => {
+              return (
+                <>
+                  <Overlay
+                    isVisible={visibleIndex3 === idx}
+                    onBackdropPress={() => toggleOverlay3(idx)}>
+                    <SetBeaconInfos
+                      modifyBeaconInfos={modifyBeaconInfos}
+                      toggleOverlay3={toggleOverlay3}
+                      item={item}
+                      idx={idx}
+                    />
+                  </Overlay>
+
+                  <ListItem.Swipeable
+                    bottomDivider
+                    leftContent={
+                      <Btn
+                        key="set"
+                        title="Set"
+                        icon={{name: 'push-pin', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'green',
+                        }}
+                        onPress={() => toggleOverlay3(idx)}
+                      />
+                    }
+                    rightContent={
+                      <Btn
+                        key="delete"
+                        title="Delete"
+                        icon={{name: 'delete', color: 'white'}}
+                        buttonStyle={{
+                          minHeight: '100%',
+                          backgroundColor: 'red',
+                        }}
+                        onPress={() => deleteBlueprint(item)}
+                      />
+                    }>
+                    {idx % 2 === 0 ? (
+                      <FontAwesome name="building-o" size={30} />
+                    ) : (
+                      <FontAwesome name="building" size={30} />
+                    )}
+                    <ListItem.Content style={{alignItems: 'center'}}>
+                      <ListItem.Title>
+                        {item.building_name +
+                          ' ' +
+                          item.floor +
+                          'F' +
+                          '\n' +
+                          item.uuid}
+                      </ListItem.Title>
+                    </ListItem.Content>
+                    <ListItem.Chevron />
+                  </ListItem.Swipeable>
+                </>
+              );
+            })}
+          </View>
+        );
       default:
         break;
     }
