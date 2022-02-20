@@ -1,18 +1,76 @@
 import * as React from 'react';
+import axios from 'axios';
 import {Image, View, Dimensions} from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
-import Svg, {Circle} from 'react-native-svg';
+import Svg, {Circle, Path, Marker, Polyline} from 'react-native-svg';
 import BottomBar from '../BottomBar';
+import FireAlarm from '../FireAlarm';
+
+import {Url} from '../../ServerURL/url';
+import deviceInfo from '../GetDevice';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
-const DrawMap = ({location, blueprint, blueprintSize, isFired}) => {
+const DrawMap = ({
+  floor,
+  uuid,
+  location,
+  blueprint,
+  blueprintSize,
+  isFired,
+}) => {
   if (blueprint === null) return <></>;
   const ratio = windowHeight / Number(blueprintSize.height);
+
+  React.useEffect(() => {
+    isFired && setDestination('exit');
+  }, [isFired]);
+
+  const [polyline, setPolyline] = React.useState('');
+
+  const [destination, setDestination] = React.useState('');
+  const getDestination = dst => {
+    setDestination(dst);
+  };
+
+  React.useEffect(() => {
+    const getOptimalRoute = async () => {
+      await axios
+        .post(
+          Url + 'app/loadRoute',
+          {uuid: uuid, floor: floor, destination: destination},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Device: deviceInfo,
+            },
+          },
+        )
+        .then(response => {
+          alert(response.data.message);
+          if (response.data.status === 'success') {
+            let polyline = '';
+            response.data.coordinates.map(coor => {
+              return (polyline += `${coor[0]},${coor[1]}`);
+            });
+            setPolyline(polyline);
+          } else {
+            setPolyline('');
+          }
+          setDestination('');
+        })
+        .catch(error => {
+          console.log(error);
+          throw error;
+        });
+    };
+    destination !== '' && getOptimalRoute();
+  }, [destination]);
+
   return (
     <>
-      <BottomBar />
+      {isFired ? <FireAlarm /> : <BottomBar getDestination={getDestination} />}
       <ImageZoom
         cropWidth={windowWidth}
         cropHeight={windowHeight}
@@ -72,9 +130,29 @@ const DrawMap = ({location, blueprint, blueprintSize, isFired}) => {
                 />
               );
             })}
-            {/* isFired === true, draw emergency route
-            isFired === false, draw route when point are exist */}
-            {isFired ? <></> : <></>}
+            {destination !== '' && (
+              <>
+                <Marker
+                  id="Triangle"
+                  viewBox="0 0 10 10"
+                  refX="0"
+                  refY="5"
+                  p
+                  markerUnits="strokeWidth"
+                  markerWidth="4"
+                  markerHeight="3"
+                  orient="auto">
+                  <Path d="M 0 0 L 10 5 L 0 10 z" />
+                </Marker>
+                <Polyline
+                  points={polyline}
+                  fill="red"
+                  stroke="red"
+                  strokeWidth="3"
+                  markerEnd="url(#Triangle)"
+                />
+              </>
+            )}
           </Svg>
         </View>
       </ImageZoom>

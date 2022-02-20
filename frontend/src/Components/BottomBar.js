@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import 'react-native-gesture-handler';
-import {Searchbar} from 'react-native-paper';
+import {Searchbar, TextInput, IconButton} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -65,7 +65,12 @@ const styles = StyleSheet.create({
   },
 });
 
-const BottomBar = () => {
+const BottomBar = props => {
+  const [destination, setDestination] = React.useState('');
+  const sendDestination = dst => {
+    props.getDestination(dst);
+  };
+
   // panel contents
   const defaultProps = {
     draggableRange: {top: windowHeight - 100, bottom: 0},
@@ -78,16 +83,20 @@ const BottomBar = () => {
   };
 
   const handleExitBtn = () => {
+    sendDestination('exit');
     closePanel();
   };
 
   const handleToiletBtn = () => {
+    sendDestination('toilet');
     closePanel();
   };
-  const handleFireExtingiuisherBtn = () => {
+  const handleFireExtinguisherBtn = () => {
+    sendDestination('fire extinguisher');
     closePanel();
   };
   const handleDefibrillatorBtn = () => {
+    sendDestination('defibrillator');
     closePanel();
   };
 
@@ -96,9 +105,6 @@ const BottomBar = () => {
   };
 
   const PanelContent = () => {
-    const [searchQuery, setSearchQuery] = React.useState('');
-
-    const onChangeSearch = query => setSearchQuery(query);
     return (
       <>
         <View>
@@ -114,7 +120,7 @@ const BottomBar = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.PanelBtn}
-              onPress={handleFireExtingiuisherBtn}>
+              onPress={handleFireExtinguisherBtn}>
               <FontAwesome
                 name="fire-extinguisher"
                 size={60}
@@ -129,12 +135,27 @@ const BottomBar = () => {
           </View>
         </View>
         <View style={styles.searchBar}>
-          <Searchbar
+          <TextInput
             placeholder="Type your destination"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
+            label="Destination"
+            value={destination}
+            onChangeText={dst => setDestination(dst)}
             onFocus={clickOnSearchBar}
           />
+          <IconButton
+            icon="search"
+            color="black"
+            size={20}
+            onPress={() => {
+              sendDestination(destination), setDestination(''), closePanel();
+            }}
+          />
+          {/* <Searchbar
+            placeholder="Type your destination"
+            onChangeText={handleDestination}
+            value={destination}
+            onFocus={clickOnSearchBar}
+          /> */}
         </View>
       </>
     );
