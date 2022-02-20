@@ -270,6 +270,8 @@ const RangingBeacon = () => {
   return (
     <>
       <DrawMap
+        floor={floor}
+        uuid={uuid}
         location={location}
         blueprint={blueprint}
         blueprintSize={blueprintSize}
