@@ -21,10 +21,11 @@ import logo from '../images/Logo.png';
 import Beacon from '../Components/Beacon/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
-import {AuthContext} from '../Components/SideBar';
+import {AuthContext} from '../Components/AuthContextProvider';
 import {Url} from '../ServerURL/url';
 import TakeCoordinate from '../Components/Blueprint/TakeCoordinate';
 import SetBeaconInfos from '../Components/Beacon/SetBeaconInfos';
+import BottomBar from '../Components/BottomBar';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -130,11 +131,19 @@ const styles = StyleSheet.create({
 });
 
 const HomeScreen = ({locationEnabled}) => {
+  const [destination, setDestination] = React.useState('');
+  const getDestination = dst => {
+    setDestination(dst);
+  };
+
   return (
     <SafeAreaView flex={1}>
       <View style={styles.MainContainer}>
         {locationEnabled ? (
-          <Beacon />
+          <>
+            <BottomBar getDestination={getDestination} />
+            <Beacon destination={destination} />
+          </>
         ) : (
           <>
             <Text style={{fontSize: 25, color: 'black'}}>
@@ -270,7 +279,7 @@ const BlueprintScreen = () => {
     },
     {
       title: 'Set location of beacon',
-      iconName: 'location',
+      iconName: 'add-location',
     },
   ];
 
@@ -441,6 +450,7 @@ const BlueprintScreen = () => {
         },
       )
       .then(response => {
+        console.log(response);
         // base64, floor, uuid, buildingName, image_width, image_height, blueprint_width, blueprint_height, coordinate (array)
         const allInformation = [];
         response.data.map(value => {
@@ -480,7 +490,7 @@ const BlueprintScreen = () => {
   const handleAccordionClick = index => {
     activeIndex === index ? setActiveIndex(null) : setActiveIndex(index);
     if (index === 0) setResponse(null);
-    else if (index === 1 || index === 2) getBlueprints();
+    else if (index === 1 || index === 2 || index == 3) getBlueprints();
   };
 
   const [visibleIndex, setVisibleIndex] = React.useState();
@@ -512,7 +522,7 @@ const BlueprintScreen = () => {
   };
 
   const toggleOverlay3 = idx => {
-    toggleOverlay3 === idx && idx !== null
+    visibleIndex3 === idx && idx !== null
       ? setVisibleIndex3(null)
       : setVisibleIndex3(idx);
   };

@@ -7,10 +7,9 @@ import {
   Dimensions,
   Animated,
   Image,
-  SafeAreaView,
 } from 'react-native';
 import 'react-native-gesture-handler';
-import {Searchbar, TextInput, IconButton} from 'react-native-paper';
+import {TextInput, IconButton} from 'react-native-paper';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -41,7 +40,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   PanelContainer: {
-    // flex: 1,
     backgroundColor: 'white',
     alignItems: 'center',
     borderTopLeftRadius: 30,
@@ -61,16 +59,21 @@ const styles = StyleSheet.create({
     width: 50,
   },
   searchBar: {
-    width: '90%',
+    flexDirection: 'row',
+    width: '100%',
+    // textAlign: 'center',
+  },
+  dstInput: {
+    marginHorizontal: '4%',
+    width: '70%',
+  },
+  dstBtn: {
+    // width: '50%',
+    // height: 'auto',
   },
 });
 
 const BottomBar = props => {
-  const [destination, setDestination] = React.useState('');
-  const sendDestination = dst => {
-    props.getDestination(dst);
-  };
-
   // panel contents
   const defaultProps = {
     draggableRange: {top: windowHeight - 100, bottom: 0},
@@ -82,29 +85,33 @@ const BottomBar = props => {
     draggedValue.setValue(0);
   };
 
-  const handleExitBtn = () => {
-    sendDestination('exit');
-    closePanel();
-  };
-
-  const handleToiletBtn = () => {
-    sendDestination('toilet');
-    closePanel();
-  };
-  const handleFireExtinguisherBtn = () => {
-    sendDestination('fire extinguisher');
-    closePanel();
-  };
-  const handleDefibrillatorBtn = () => {
-    sendDestination('defibrillator');
-    closePanel();
-  };
-
-  const clickOnSearchBar = () => {
-    draggedValue.setValue(top);
+  const sendDestination = dst => {
+    props.getDestination(dst);
   };
 
   const PanelContent = () => {
+    const [destination, setDestination] = React.useState('');
+    const handleExitBtn = () => {
+      sendDestination('exit');
+      closePanel();
+    };
+
+    const handleToiletBtn = () => {
+      sendDestination('toilet');
+      closePanel();
+    };
+    const handleFireExtinguisherBtn = () => {
+      sendDestination('fire extinguisher');
+      closePanel();
+    };
+    const handleDefibrillatorBtn = () => {
+      sendDestination('defibrillator');
+      closePanel();
+    };
+
+    const clickOnSearchBar = () => {
+      draggedValue.setValue(top);
+    };
     return (
       <>
         <View>
@@ -136,6 +143,7 @@ const BottomBar = props => {
         </View>
         <View style={styles.searchBar}>
           <TextInput
+            style={styles.dstInput}
             placeholder="Type your destination"
             label="Destination"
             value={destination}
@@ -143,19 +151,14 @@ const BottomBar = props => {
             onFocus={clickOnSearchBar}
           />
           <IconButton
-            icon="search"
+            icon="map-search-outline"
             color="black"
-            size={20}
+            style={styles.dstBtn}
+            size={40}
             onPress={() => {
               sendDestination(destination), setDestination(''), closePanel();
             }}
           />
-          {/* <Searchbar
-            placeholder="Type your destination"
-            onChangeText={handleDestination}
-            value={destination}
-            onFocus={clickOnSearchBar}
-          /> */}
         </View>
       </>
     );
@@ -173,7 +176,6 @@ const BottomBar = props => {
         snappingPoints={[200, top]}
         animatedValue={draggedValue}
         draggableRange={{top: top, bottom: bottom}}
-        onBackButtonPress="true"
         containerStyle={styles.PanelContainer}
         height={windowHeight - 100}
         friction={5}
