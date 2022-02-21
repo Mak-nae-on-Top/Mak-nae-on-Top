@@ -11,6 +11,8 @@ import {Url, SocketUrl} from '../../ServerURL/url';
 import deviceInfo from '../GetDevice';
 import DrawMap from './DrawMap';
 
+import {AuthContext} from '../AuthContextProvider';
+
 const {
   init,
   configure,
@@ -24,7 +26,9 @@ const {
 const kontaktEmitter = new NativeEventEmitter(KontaktModule);
 const region1 = regionSample;
 
-const RangingBeacon = () => {
+const RangingBeacon = props => {
+  const {state} = React.useContext(AuthContext);
+
   const ws = React.useRef(null);
   const [isFired, setIsFired] = React.useState(false);
 
@@ -42,7 +46,51 @@ const RangingBeacon = () => {
     width: '',
     height: '',
   });
-  const [imageSize, setImageSize] = React.useState({width: '', height: ''});
+
+  const [initLocation, setInitLocation] = React.useState({x: '', y: ''});
+  const [initRangedBeacons, setInitRangedBeacons] = React.useState([]);
+  const getInitLocation = location => {
+    setInitLocation(location);
+  };
+
+  React.useEffect(() => {
+    const accumulateBeacons = () => {
+      setTimeout(function () {
+        initBeaconSetting();
+        setInitRangedBeacons();
+        setInitLocation({x: '', y: ''});
+      }, 20000);
+    };
+    initLocation.x !== '' && initLocation.y !== '' && accumulateBeacons();
+  }, [initLocation]);
+
+  const initBeaconSetting = async () => {
+    await axios
+      .post(
+        Url + 'app/manager/init',
+        {
+          x: initLocation.x,
+          y: initLocation.y,
+          rangedBeacons: initRangedBeacons,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${state.userToken}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        },
+      )
+      .then(response => {
+        // if (response.data.status === 'success') {
+        //   getBlueprints();
+        // }
+      })
+      .catch(error => {
+        console.log(error);
+        throw error;
+      });
+  };
 
   // Auth
   const handleRequestWhenInUseAuthorization = () => {
@@ -124,6 +172,15 @@ const RangingBeacon = () => {
 
         setRangedBeacons(filteredBeacons);
         setRangedRegions(region);
+
+        initLocation.x !== '' &&
+          initLocation.y !== '' &&
+          (initRangedBeacons.length !== 0
+            ? setInitRangedBeacons(initRangedBeacons => [
+                ...initRangedBeacons,
+                filteredBeacons,
+              ])
+            : setInitRangedBeacons([filteredBeacons]));
         // console.log('Did Range Beacons : ', rangedBeacons, region);
       },
     );
@@ -159,6 +216,7 @@ const RangingBeacon = () => {
 
   // get current user's location by sending information of beacons
   React.useEffect(() => {
+    // console.log(rangedBeacons);
     const getLocation = async () => {
       await axios
         .post(Url + 'app/location', rangedBeacons, {
@@ -168,6 +226,7 @@ const RangingBeacon = () => {
           },
         })
         .then(response => {
+          // console.log(response.data.location_list);
           if (response.data.status === 'success') {
             setLocation(response.data.location_list);
             setFloor(response.data.floor);
@@ -188,6 +247,7 @@ const RangingBeacon = () => {
 
   // get current building's blueprint that user is in
   React.useEffect(() => {
+    // console.log(uuid, floor);
     const loadBlueprint = async () => {
       await axios
         .post(
@@ -200,6 +260,7 @@ const RangingBeacon = () => {
           },
         )
         .then(response => {
+          // console.log(response);
           response.data.status === 'success' &&
             (setBlueprint(`data:image/jpeg;base64,${response.data.base64}`),
             ImageSize.getSize(
@@ -255,7 +316,7 @@ const RangingBeacon = () => {
       ws.current.onmessage = e => {
         console.log('message');
         console.log(e.data);
-        e.data === 'Fire!' ? setIsFired(true) : setIsFired(false);
+        e.data === 'fire!' ? setIsFired(true) : setIsFired(false);
       };
     };
     blueprint !== null && communicateWithWS();
@@ -264,12 +325,15 @@ const RangingBeacon = () => {
   if (
     blueprintSize.width === '' ||
     blueprintSize.height === '' ||
+    location[0] === undefined ||
     location === []
   )
     return <></>;
   return (
     <>
       <DrawMap
+        getInitLocation={getInitLocation}
+        destination={props.destination}
         floor={floor}
         uuid={uuid}
         location={location}
