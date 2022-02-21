@@ -97,7 +97,7 @@ const TakeCoordinate = props => {
       },
     ];
     return (
-      <SafeAreaProvider>
+      <SafeAreaProvider key={idx}>
         <BottomSheet
           modalProps={{
             animationType: 'fade',
@@ -223,7 +223,7 @@ const TakeCoordinate = props => {
     const width = Number(blueprintSize.width);
     const height = Number(blueprintSize.height);
     return (
-      <G onPress={() => toggleVisibleIndex(idx)}>
+      <G onPress={() => toggleVisibleIndex(idx)} key={idx}>
         {drawBottomSheet(value, idx)}
         <SvgText
           fill="grey"
