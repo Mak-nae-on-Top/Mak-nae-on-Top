@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View, Dimensions, Text} from 'react-native';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -9,18 +9,35 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 100,
     width: windowWidth,
-    top: 20,
-    textAlign: 'center',
+    backgroundColor: 'white',
+    height: windowHeight * 0.15,
+    bottom: -30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: 'red',
+    borderTopWidth: 6,
+  },
+  TitleText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: 'red',
+    marginVertical: 10,
+  },
+  ContentText: {
+    fontSize: 16,
+    marginVertical: 10,
   },
 });
 
 const FireAlarm = () => {
   return (
     <View style={styles.MainContainer}>
-      <Text>🚨Fire Detected🚨</Text>
-      <Text>Follow the route and evacuate immediately</Text>
+      <Text style={styles.TitleText}>🚨Fire Detected🚨</Text>
+      <Text style={styles.ContentText}>
+        Follow the route and evacuate immediately
+      </Text>
     </View>
   );
 };
 
-export default FireAlarm;
+export default React.memo(FireAlarm);
