@@ -29,9 +29,10 @@ const SetBeaconInfos = props => {
 
   const [modifiedInfo, setModifiedInfo] = React.useState();
   const handleModifiedInfo = (key, value) => {
+    value = Number(value);
     setModifiedInfo({
       ...modifiedInfo,
-      [key]: Number(value),
+      [key]: value,
     });
   };
 
@@ -55,7 +56,6 @@ const SetBeaconInfos = props => {
       : setVisiblePoint({...visiblePoint, x: x, y: y});
   };
   const [location, setLocation] = React.useState({x: '', y: ''});
-  const [identifier, setIdentifier] = React.useState({major: '', minor: ''});
 
   // draw delivered beacon bottom sheet
   const drawBottomSheet = (value, idx) => {
@@ -99,7 +99,7 @@ const SetBeaconInfos = props => {
       },
     ];
     return (
-      <SafeAreaProvider>
+      <SafeAreaProvider key={idx}>
         <BottomSheet
           modalProps={{
             animationType: 'fade',
@@ -168,11 +168,10 @@ const SetBeaconInfos = props => {
           handleApplyBtn({
             x: location.x,
             y: location.y,
-            major: identifier.major,
-            minor: identifier.minor,
+            major: modifiedInfo.major,
+            minor: modifiedInfo.minor,
           }),
-            setVisiblePoint({...visiblePoint, x: '', y: ''}),
-            setIdentifier({...identifier, major: '', minor: ''});
+            setVisiblePoint({...visiblePoint, x: '', y: ''});
         },
       },
       {
@@ -180,8 +179,7 @@ const SetBeaconInfos = props => {
         containerStyle: {backgroundColor: '#ff2121'},
         titleStyle: {color: 'white', fontSize: 30, fontWeight: 'bold'},
         onPress: () => {
-          setVisiblePoint({...visiblePoint, x: '', y: ''}),
-            setIdentifier({...identifier, major: '', minor: ''});
+          setVisiblePoint({...visiblePoint, x: '', y: ''});
         },
       },
     ];
@@ -211,10 +209,10 @@ const SetBeaconInfos = props => {
                 ) : (
                   <TextInput
                     style={val.style}
-                    value={String(identifier[val.key])}
+                    // value={Number(modifiedInfo[val.key])}
                     placeholder={val.title}
                     autoCorrect={false}
-                    onChangeText={identifier => setIdentifier(identifier)}
+                    onChangeText={value => handleModifiedInfo(val.key, value)}
                     placeholderTextColor="#999999"
                   />
                 )}
@@ -233,7 +231,7 @@ const SetBeaconInfos = props => {
     const width = Number(blueprintSize.width);
     const height = Number(blueprintSize.height);
     return (
-      <G onPress={() => toggleVisibleIndex(idx)}>
+      <G onPress={() => toggleVisibleIndex(idx)} key={idx}>
         {drawBottomSheet(value, idx)}
         <SvgText
           fill="grey"
@@ -291,6 +289,7 @@ const SetBeaconInfos = props => {
 
   // transfer all modified information
   const handleSaveBtn = () => {
+    console.log(modifiedInfos);
     props.modifyBeaconInfos(
       props.item.uuid,
       props.item.floor,
