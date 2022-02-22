@@ -15,21 +15,25 @@ import 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import NumericInput from 'react-native-numeric-input';
-import axios from 'axios';
 
 import logo from '../images/Logo.png';
 import Beacon from '../Components/Beacon/Beacons.ios.js';
 import UploadBtn from '../Components/Blueprint/UploadBtn';
 import UploadResponse from '../Components/Blueprint/UploadResponse';
 import {AuthContext} from '../Components/AuthContextProvider';
-import {Url} from '../ServerURL/url';
 import TakeCoordinate from '../Components/Blueprint/TakeCoordinate';
 import SetBeaconInfos from '../Components/Beacon/SetBeaconInfos';
 import BottomBar from '../Components/BottomBar';
 
+// import for server transmission
+import axios from 'axios';
+import {Url} from '../ServerURL/url';
+
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
+// for styled components
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
@@ -299,8 +303,6 @@ const BlueprintScreen = () => {
       title: 'Select Blueprint',
       type: 'library',
       options: {
-        // maxHeight: 200,
-        // maxWidth: 300,
         mediaType: 'photo',
         includeBase64: true,
         includeExtra,
@@ -444,7 +446,6 @@ const BlueprintScreen = () => {
         {
           headers: {
             Authorization: `Bearer ${state.userToken}`,
-            // 'Content-Type': 'application/json',
             Accept: 'application/json',
           },
         },
@@ -867,7 +868,6 @@ const BlueprintScreen = () => {
             })}
           </View>
         );
-      // todo: 특정 비콘 앞에서 일정 시간 동안 서있음 (비콘의 좌표나 major, minor)
       // set beacon's location for each floor
       case 3:
         return (
@@ -938,8 +938,6 @@ const BlueprintScreen = () => {
         break;
     }
   };
-
-  // getBlueprints();
   return (
     <SafeAreaView flex={1}>
       <ScrollView style={styles.AccList}>

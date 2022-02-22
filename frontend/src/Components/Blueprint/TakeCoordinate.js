@@ -6,15 +6,19 @@ import {BottomSheet, ListItem, SpeedDial} from 'react-native-elements';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import ImageSize from 'react-native-image-size';
 
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 const TakeCoordinate = props => {
+  const [dialOpen, setDialOpen] = React.useState(false);
+  const [roomName, setRoomName] = React.useState();
   const [blueprintSize, setBlueprintSize] = React.useState({
     width: 0,
     height: 0,
   });
 
+  // get the size from blueprint chosen by the user.
   React.useEffect(() => {
     ImageSize.getSize(`data:image/jpeg;base64,${props.item.base64}`).then(
       size => {
@@ -23,11 +27,13 @@ const TakeCoordinate = props => {
     );
   }, []);
 
+  // rendering value to screen
   const [coordinates, setCoordinates] = React.useState(props.item.coordinate);
-  const [modifiedCoordinates, setModifiedCoordinates] = React.useState([]);
-  const [dialOpen, setDialOpen] = React.useState(false);
 
-  const [roomName, setRoomName] = React.useState();
+  // accumulate modified coordinates
+  const [modifiedCoordinates, setModifiedCoordinates] = React.useState([]);
+
+  // modified beacon
   const [modifiedCoordinate, setModifiedCoordinate] = React.useState();
   const handleModifiedCoordinate = (key, value) => {
     if (key === 'x' || key === 'y') {
@@ -116,7 +122,6 @@ const TakeCoordinate = props => {
                 ) : index < 4 ? (
                   <TextInput
                     style={val.style}
-                    // value={String(modifiedCoordinate[val.key])}
                     placeholder={val.title}
                     autoCorrect={false}
                     onChangeText={value =>

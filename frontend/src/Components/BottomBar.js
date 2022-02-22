@@ -16,9 +16,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import bar from '../images/Bar.png';
 
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
+// for styled components
 const styles = StyleSheet.create({
   padding: {
     padding: 10,
