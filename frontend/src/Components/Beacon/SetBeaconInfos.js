@@ -244,10 +244,10 @@ const SetBeaconInfos = props => {
           strokeWidth="0.3"
           fontSize="15"
           fontWeight="bold"
-          x={(x * windowHeight) / height}
+          x={(x * windowHeight) / height - 20}
           y={(y * windowHeight) / height + 30}
           textAnchor="middle">
-          major: {value.major}
+          major:{value.major}
         </SvgText>
         <Circle
           cx={(x * windowHeight) / height}
