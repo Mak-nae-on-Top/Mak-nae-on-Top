@@ -59,8 +59,13 @@ const CustomSidebar = props => {
     <SafeAreaView style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         {state.routes.map(route => {
-          const {drawerLabel, groupName, activeTintColor, locationEnabled} =
-            descriptors[route.key].options;
+          const {
+            drawerLabel,
+            groupName,
+            activeTintColor,
+            locationEnabled,
+            fireAlarmEnabled,
+          } = descriptors[route.key].options;
           exGroupName !== groupName
             ? [(newGroup = true), (exGroupName = groupName)]
             : (newGroup = false);
@@ -86,6 +91,7 @@ const CustomSidebar = props => {
                 onPress={() =>
                   navigation.navigate(route.name, {
                     locationEnabled: locationEnabled,
+                    fireAlarmEnabled: fireAlarmEnabled,
                   })
                 }
               />
@@ -103,13 +109,13 @@ const SideBar = () => {
   const {authContext, state} = React.useContext(AuthContext);
   //status about alarm & location
   const [locationEnabled, setLocationEnabled] = React.useState(false);
-  const [alarmEnabled, setAlarmEnabled] = React.useState(false);
+  const [fireAlarmEnabled, setFireAlarmEnabled] = React.useState(false);
 
   const toggleLocationSwitch = () => {
     setLocationEnabled(previousState => !previousState);
   };
-  const toggleAlarmSwitch = () =>
-    setAlarmEnabled(previousState => !previousState);
+  const toggleFireAlarmSwitch = () =>
+    setFireAlarmEnabled(previousState => !previousState);
 
   const CustomDrawerContents = props => {
     return (
@@ -151,8 +157,8 @@ const SideBar = () => {
           <View style={styles.switchContainer}>
             <Switch
               trackColor={{true: 'red'}}
-              onValueChange={toggleAlarmSwitch}
-              value={alarmEnabled}
+              onValueChange={toggleFireAlarmSwitch}
+              value={fireAlarmEnabled}
             />
           </View>
         </View>
@@ -174,9 +180,14 @@ const SideBar = () => {
             groupName: 'Home',
             activeTintColor: '#282828',
             locationEnabled: locationEnabled,
+            fireAlarmEnabled: fireAlarmEnabled,
           }}
           component={props => (
-            <HomeStack locationEnabled={locationEnabled} props={props} />
+            <HomeStack
+              locationEnabled={locationEnabled}
+              fireAlarmEnabled={fireAlarmEnabled}
+              props={props}
+            />
           )}
         />
 
