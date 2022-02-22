@@ -57,7 +57,7 @@ const TakeCoordinate = props => {
   const [visiblePoint, setVisiblePoint] = React.useState({x: '', y: ''});
   const toggleVisiblePoint = (x, y) => {
     // adjusting the screen proportion.
-    x = (x / windowHeight) * blueprintSize.width;
+    x = (x / windowHeight) * blueprintSize.height;
     y = (y / windowHeight) * blueprintSize.height;
     setLocation({x: x, y: y});
     visiblePoint.x === x && visiblePoint.y === y && x !== '' && y !== ''
@@ -225,7 +225,6 @@ const TakeCoordinate = props => {
   const drawCoordinates = (value, idx) => {
     const x = Number(value.x);
     const y = Number(value.y);
-    const width = Number(blueprintSize.width);
     const height = Number(blueprintSize.height);
     return (
       <G onPress={() => toggleVisibleIndex(idx)} key={idx}>
@@ -236,13 +235,13 @@ const TakeCoordinate = props => {
           strokeWidth="0.3"
           fontSize="15"
           fontWeight="bold"
-          x={(x * windowHeight) / width}
+          x={(x * windowHeight) / height}
           y={(y * windowHeight) / height + 30}
           textAnchor="middle">
           {value.room_name}
         </SvgText>
         <Circle
-          cx={(x * windowHeight) / width}
+          cx={(x * windowHeight) / height}
           cy={(y * windowHeight) / height}
           r="15"
           stroke="black"
@@ -351,12 +350,12 @@ const TakeCoordinate = props => {
               <Svg
                 height={windowHeight}
                 width={
-                  (windowHeight / Number(blueprintSize.height)) *
-                  Number(blueprintSize.width)
+                  (Number(blueprintSize.width) * windowHeight) /
+                  Number(blueprintSize.height)
                 }
                 viewBox={`0 0 ${
-                  (windowHeight / Number(blueprintSize.height)) *
-                  Number(blueprintSize.width)
+                  (Number(blueprintSize.width) * windowHeight) /
+                  Number(blueprintSize.height)
                 } ${windowHeight}`}>
                 {coordinates !== undefined &&
                   coordinates.map((value, idx) => {

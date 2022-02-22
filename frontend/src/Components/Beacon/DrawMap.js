@@ -93,19 +93,15 @@ const DrawMap = props => {
         <View style={{position: 'absolute', zIndex: 2}}>
           <Svg
             height={windowHeight}
-            width={
-              (windowHeight / Number(props.blueprintSize.height)) *
-              Number(props.blueprintSize.width)
-            }
+            width={Number(props.blueprintSize.width) * ratio}
             viewBox={`0 0 ${
-              (windowHeight / Number(props.blueprintSize.height)) *
-              Number(props.blueprintSize.width)
+              Number(props.blueprintSize.width) * ratio
             } ${windowHeight}`}>
             {/* user's current location */}
             <Circle
               cx={
                 (Number(props.location[0].x) * windowHeight) /
-                Number(props.blueprintSize.width)
+                Number(props.blueprintSize.height)
               }
               cy={
                 (Number(props.location[0].y) * windowHeight) /
@@ -123,7 +119,7 @@ const DrawMap = props => {
                   key={loc}
                   cx={
                     (Number(loc.x) * windowHeight) /
-                    Number(props.blueprintSize.width)
+                    Number(props.blueprintSize.height)
                   }
                   cy={
                     (Number(loc.y) * windowHeight) /
