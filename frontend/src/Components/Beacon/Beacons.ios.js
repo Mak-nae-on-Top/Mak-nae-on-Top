@@ -46,32 +46,37 @@ const RangingBeacon = props => {
     width: '',
     height: '',
   });
-
   const [initLocation, setInitLocation] = React.useState({x: '', y: ''});
+
   const [initRangedBeacons, setInitRangedBeacons] = React.useState([]);
   const getInitLocation = location => {
     setInitLocation(location);
   };
 
+  const beaconRef = React.useRef(initRangedBeacons);
+  beaconRef.current = initRangedBeacons;
+
   React.useEffect(() => {
-    const accumulateBeacons = () => {
-      setTimeout(function () {
-        initBeaconSetting();
-        setInitRangedBeacons();
+    const sendAccumulatedBeacons = () => {
+      const timer = setTimeout(() => {
+        initBeaconSetting(beaconRef.current);
+        setInitRangedBeacons([]);
         setInitLocation({x: '', y: ''});
       }, 20000);
+      return () => clearTimeout(timer);
     };
-    initLocation.x !== '' && initLocation.y !== '' && accumulateBeacons();
+    initLocation.x !== '' && initLocation.y !== '' && sendAccumulatedBeacons();
   }, [initLocation]);
 
-  const initBeaconSetting = async () => {
+  const initBeaconSetting = async accumulateBeacons => {
+    console.log(accumulateBeacons);
     await axios
       .post(
         Url + 'app/manager/init',
         {
           x: initLocation.x,
           y: initLocation.y,
-          rangedBeacons: initRangedBeacons,
+          rangedBeacons: accumulateBeacons,
         },
         {
           headers: {
@@ -82,6 +87,7 @@ const RangingBeacon = props => {
         },
       )
       .then(response => {
+        console.log(response);
         // if (response.data.status === 'success') {
         //   getBlueprints();
         // }
@@ -141,72 +147,92 @@ const RangingBeacon = props => {
       .catch(error => console.log('Start ranging beacons error : ', error));
   };
 
+  React.useEffect(
+    () => {
+      // Initialization, configuration and adding of beacon regions
+      init(BeaconApiKey)
+        .then(() =>
+          configure({
+            dropEmptyRanges: true,
+            invalidationAge: 5000,
+          }),
+        )
+        .then(() => handleRequestWhenInUseAuthorization())
+        .then(() => {
+          console.log('Initialized beacon ranging!');
+        })
+        .catch(error => console.log('error', error));
+
+      // Beacon ranging event
+      const regionRangeEvent = kontaktEmitter.addListener(
+        'didRangeBeacons',
+        ({beacons: rangedBeacons, region}) => {
+          // delete didn't detected beacons & sort by distance
+          const filteredBeacons = rangedBeacons
+            .filter(beacon => beacon.proximity !== 'unknown')
+            .sort((a, b) => a.accuracy - b.accuracy);
+
+          // delete each beacon's useless information
+          filteredBeacons.map(x => {
+            delete x.proximity, delete x.rssi;
+          });
+
+          setRangedBeacons(filteredBeacons);
+          setRangedRegions(region);
+
+          // console.log(initRangedBeacons);
+          // initLocation.x !== '' &&
+          //   initLocation.y !== '' &&
+          //   setInitRangedBeacons(initRangedBeacons => [
+          //     ...initRangedBeacons,
+          //     ...filteredBeacons,
+          //   ]);
+          //   (initRangedBeacons.length !== 0
+          //     ? setInitRangedBeacons(initRangedBeacons => [
+          //         ...initRangedBeacons,
+          //         filteredBeacons,
+          //       ])
+          //     : setInitRangedBeacons([filteredBeacons]));
+          // // console.log('Did Range Beacons : ', rangedBeacons, region);
+        },
+      );
+
+      const regionRangeFailEvent = kontaktEmitter.addListener(
+        'rangingDidFailForRegion',
+        ({region, error}) => {
+          console.log('Ranging Did Fail For Region : ', region, error);
+        },
+      );
+
+      // Auth event
+      const authEvent = kontaktEmitter.addListener(
+        'authorizationStatusDidChange',
+        ({status}) => {
+          setAuthStatus(status);
+          console.log('Authorization Status Did Change : ', status);
+        },
+      );
+
+      //Beacon event remove
+      return () => {
+        regionRangeEvent.remove();
+        regionRangeFailEvent.remove();
+        authEvent.remove();
+      };
+    },
+    [],
+    // [initLocation, initRangedBeacons],
+  );
+
   React.useEffect(() => {
-    // Initialization, configuration and adding of beacon regions
-    init(BeaconApiKey)
-      .then(() =>
-        configure({
-          dropEmptyRanges: true,
-          invalidationAge: 5000,
-        }),
-      )
-      .then(() => handleRequestWhenInUseAuthorization())
-      .then(() => {
-        console.log('Initialized beacon ranging!');
-      })
-      .catch(error => console.log('error', error));
-
-    // Beacon ranging event
-    const regionRangeEvent = kontaktEmitter.addListener(
-      'didRangeBeacons',
-      ({beacons: rangedBeacons, region}) => {
-        // delete didn't detected beacons & sort by distance
-        const filteredBeacons = rangedBeacons
-          .filter(beacon => beacon.proximity !== 'unknown')
-          .sort((a, b) => a.accuracy - b.accuracy);
-
-        // delete each beacon's useless information
-        filteredBeacons.map(x => {
-          delete x.proximity, delete x.rssi;
-        });
-
-        setRangedBeacons(filteredBeacons);
-        setRangedRegions(region);
-
-        initLocation.x !== '' &&
-          initLocation.y !== '' &&
-          (initRangedBeacons.length !== 0
-            ? setInitRangedBeacons(initRangedBeacons => [
-                ...initRangedBeacons,
-                filteredBeacons,
-              ])
-            : setInitRangedBeacons([filteredBeacons]));
-        // console.log('Did Range Beacons : ', rangedBeacons, region);
-      },
-    );
-    const regionRangeFailEvent = kontaktEmitter.addListener(
-      'rangingDidFailForRegion',
-      ({region, error}) => {
-        console.log('Ranging Did Fail For Region : ', region, error);
-      },
-    );
-
-    // Auth event
-    const authEvent = kontaktEmitter.addListener(
-      'authorizationStatusDidChange',
-      ({status}) => {
-        setAuthStatus(status);
-        console.log('Authorization Status Did Change : ', status);
-      },
-    );
-
-    //Beacon event remove
-    return () => {
-      regionRangeEvent.remove();
-      regionRangeFailEvent.remove();
-      authEvent.remove();
+    const accumulateBeacons = () => {
+      setInitRangedBeacons(initRangedBeacons => [
+        ...initRangedBeacons,
+        ...rangedBeacons,
+      ]);
     };
-  }, []);
+    initLocation.x !== '' && initLocation.y !== '' && accumulateBeacons();
+  }, [rangedBeacons]);
 
   //Start beacon ranging & getting ranged regions when auth changed
   React.useEffect(() => {
