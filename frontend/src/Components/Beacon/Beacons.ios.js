@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, NativeEventEmitter} from 'react-native';
+import {NativeEventEmitter} from 'react-native';
 import ImageSize from 'react-native-image-size';
 
 import Kontakt, {KontaktModule} from 'react-native-kontaktio';
-import {regionSample, GetUuid} from './GetUuid';
+import {kswRegion} from './GetUuid';
 import axios from 'axios';
 
 import BeaconApiKey from './BeaconApiKey';
@@ -24,7 +24,6 @@ const {
 } = Kontakt;
 
 const kontaktEmitter = new NativeEventEmitter(KontaktModule);
-const region1 = regionSample;
 
 const RangingBeacon = props => {
   const {state} = React.useContext(AuthContext);
@@ -88,9 +87,6 @@ const RangingBeacon = props => {
       )
       .then(response => {
         console.log(response);
-        // if (response.data.status === 'success') {
-        //   getBlueprints();
-        // }
       })
       .catch(error => {
         console.log(error);
@@ -117,28 +113,9 @@ const RangingBeacon = props => {
       .catch(error => console.log('Get Ranged Regions Error : ', error));
   };
 
-  // Rendering ranged beacons(sort by close distance)
-  const renderRangedBeacons = () => {
-    return ranging && rangedBeacons.length ? (
-      rangedBeacons.map((beacon, index) => (
-        <View key={index} style={[styles.beaconView]}>
-          <Text style={{fontWeight: 'bold'}}>{beacon.uuid}</Text>
-          <Text>Distance: {beacon.accuracy}</Text>
-          <Text>
-            Major: {beacon.major}, Minor: {beacon.minor}
-          </Text>
-        </View>
-      ))
-    ) : (
-      <View>
-        <Text>No beacons detected within the range</Text>
-      </View>
-    );
-  };
-
   // Start beacon ranging
   const startRanging = () => {
-    startRangingBeaconsInRegion(region1)
+    startRangingBeaconsInRegion(kswRegion)
       .then(() => {
         setRanging(true);
         setRangedBeacons([]);
@@ -179,21 +156,6 @@ const RangingBeacon = props => {
 
           setRangedBeacons(filteredBeacons);
           setRangedRegions(region);
-
-          // console.log(initRangedBeacons);
-          // initLocation.x !== '' &&
-          //   initLocation.y !== '' &&
-          //   setInitRangedBeacons(initRangedBeacons => [
-          //     ...initRangedBeacons,
-          //     ...filteredBeacons,
-          //   ]);
-          //   (initRangedBeacons.length !== 0
-          //     ? setInitRangedBeacons(initRangedBeacons => [
-          //         ...initRangedBeacons,
-          //         filteredBeacons,
-          //       ])
-          //     : setInitRangedBeacons([filteredBeacons]));
-          // // console.log('Did Range Beacons : ', rangedBeacons, region);
         },
       );
 
@@ -228,7 +190,7 @@ const RangingBeacon = props => {
     const accumulateBeacons = () => {
       setInitRangedBeacons(initRangedBeacons => [
         ...initRangedBeacons,
-        ...rangedBeacons,
+        rangedBeacons,
       ]);
     };
     initLocation.x !== '' && initLocation.y !== '' && accumulateBeacons();
@@ -242,7 +204,6 @@ const RangingBeacon = props => {
 
   // get current user's location by sending information of beacons
   React.useEffect(() => {
-    // console.log(rangedBeacons);
     const getLocation = async () => {
       await axios
         .post(Url + 'app/location', rangedBeacons, {
@@ -252,7 +213,6 @@ const RangingBeacon = props => {
           },
         })
         .then(response => {
-          // console.log(response.data.location_list);
           if (response.data.status === 'success') {
             setLocation(response.data.location_list);
             setFloor(response.data.floor);
@@ -269,11 +229,10 @@ const RangingBeacon = props => {
         });
     };
     ranging && rangedBeacons.length ? getLocation() : {};
-  }, [rangedRegions]);
+  }, [rangedBeacons]);
 
   // get current building's blueprint that user is in
   React.useEffect(() => {
-    // console.log(uuid, floor);
     const loadBlueprint = async () => {
       await axios
         .post(
@@ -286,7 +245,6 @@ const RangingBeacon = props => {
           },
         )
         .then(response => {
-          // console.log(response);
           response.data.status === 'success' &&
             (setBlueprint(`data:image/jpeg;base64,${response.data.base64}`),
             ImageSize.getSize(
@@ -312,10 +270,9 @@ const RangingBeacon = props => {
   }, [floor, uuid]);
 
   const sendToWS = data => {
-    // connect to web socket server
     ws.current = new WebSocket(SocketUrl);
+    // connect to web socket server
     ws.current.onopen = () => {
-      console.log('open');
       try {
         // socket connection is required
         if (!ws.current) {
@@ -340,7 +297,6 @@ const RangingBeacon = props => {
   React.useEffect(() => {
     const communicateWithWS = () => {
       ws.current.onmessage = e => {
-        console.log('message');
         console.log(e.data);
         e.data === 'fire!' ? setIsFired(true) : setIsFired(false);
       };
@@ -370,12 +326,5 @@ const RangingBeacon = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  beaconView: {
-    alignItems: 'center',
-    padding: 10,
-  },
-});
 
 export default RangingBeacon;
