@@ -34,7 +34,7 @@ const HamburgerIcon = props => {
 
 const Stack = createStackNavigator();
 
-const HomeStack = ({locationEnabled, props}) => {
+const HomeStack = ({locationEnabled, fireAlarmEnabled, props}) => {
   return (
     <Stack.Navigator
       initialRouteName="HomeScreen"
@@ -50,7 +50,13 @@ const HomeStack = ({locationEnabled, props}) => {
             <HamburgerIcon navigationProps={props.navigation} />
           ),
         }}>
-        {props => <HomeScreen {...props} locationEnabled={locationEnabled} />}
+        {props => (
+          <HomeScreen
+            {...props}
+            locationEnabled={locationEnabled}
+            fireAlarmEnabled={fireAlarmEnabled}
+          />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );

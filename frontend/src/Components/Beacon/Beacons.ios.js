@@ -281,7 +281,7 @@ const RangingBeacon = props => {
           // resolve with false
           return Promise.resolve(false);
         }
-        ws.current.send(JSON.stringify(data));
+        props.fireAlarmEnabled && ws.current.send(JSON.stringify(data));
         // resolve with true;
         return Promise.resolve(true);
       } catch (error) {

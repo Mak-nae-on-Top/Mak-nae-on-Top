@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = ({locationEnabled}) => {
+const HomeScreen = ({locationEnabled, fireAlarmEnabled}) => {
   const [destination, setDestination] = React.useState('');
   const getDestination = dst => {
     setDestination(dst);
@@ -146,7 +146,10 @@ const HomeScreen = ({locationEnabled}) => {
         {locationEnabled ? (
           <>
             <BottomBar getDestination={getDestination} />
-            <Beacon destination={destination} />
+            <Beacon
+              destination={destination}
+              fireAlarmEnabled={fireAlarmEnabled}
+            />
           </>
         ) : (
           <>
