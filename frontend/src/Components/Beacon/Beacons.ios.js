@@ -212,6 +212,7 @@ const RangingBeacon = props => {
           },
         })
         .then(response => {
+          console.log(response.data.location_list);
           if (response.data.status === 'success') {
             setLocation(response.data.location_list);
             setFloor(response.data.floor);
