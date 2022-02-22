@@ -1,14 +1,18 @@
 import * as React from 'react';
-import axios from 'axios';
 import {Image, View, Dimensions} from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import Svg, {Circle, Polyline} from 'react-native-svg';
 import FireAlarm from '../FireAlarm';
 
+// import for server transmission
+import axios from 'axios';
 import {Url} from '../../ServerURL/url';
 import deviceInfo from '../GetDevice';
+
+// import for auth context
 import {AuthContext} from '../AuthContextProvider';
 
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
@@ -17,9 +21,14 @@ const DrawMap = props => {
 
   if (props.blueprint === null) return <></>;
   const ratio = windowHeight / Number(props.blueprintSize.height);
-
   const [polyline, setPolyline] = React.useState('');
 
+  const initBeaconSetting = (x, y) => {
+    // send clicked location to Beacons.ios.js when user is logged in
+    state.userToken != null && props.getInitLocation({x: x, y: y});
+  };
+
+  // send destination to server and get optimal route to destination
   React.useEffect(() => {
     const getOptimalRoute = async dst => {
       await axios
@@ -50,16 +59,14 @@ const DrawMap = props => {
           throw error;
         });
     };
+    // case 1 : when fire situation, destination is exit
+    // case 2 : when normal situation, destination is user's choice
     props.isFired
       ? getOptimalRoute('exit')
       : props.destination &&
         props.destination !== '' &&
         getOptimalRoute(props.destination);
   }, [props.destination, props.isFired]);
-
-  const initBeaconSetting = (x, y) => {
-    state.userToken != null && props.getInitLocation({x: x, y: y});
-  };
 
   return (
     <>
@@ -72,6 +79,7 @@ const DrawMap = props => {
         minScale={1}
         enableCenterFocus={false}
         onClick={e => initBeaconSetting(e.locationX, e.locationY)}>
+        {/* blueprint */}
         <View style={{position: 'absolute', zIndex: 1}}>
           <Image
             style={{
@@ -93,6 +101,7 @@ const DrawMap = props => {
               (windowHeight / Number(props.blueprintSize.height)) *
               Number(props.blueprintSize.width)
             } ${windowHeight}`}>
+            {/* user's current location */}
             <Circle
               cx={
                 (Number(props.location[0].x) * windowHeight) /
@@ -107,6 +116,7 @@ const DrawMap = props => {
               strokeWidth="0.5"
               fill="red"
             />
+            {/* other user's current location */}
             {props.location.slice(1).map(loc => {
               return (
                 <Circle
@@ -126,6 +136,7 @@ const DrawMap = props => {
                 />
               );
             })}
+            {/* destination */}
             {polyline !== '' && (
               <Polyline
                 points={polyline}

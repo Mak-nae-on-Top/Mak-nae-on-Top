@@ -1,9 +1,11 @@
 import * as React from 'react';
 import {StyleSheet, View, Dimensions, Text} from 'react-native';
 
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
+// for styled components
 const styles = StyleSheet.create({
   MainContainer: {
     position: 'absolute',

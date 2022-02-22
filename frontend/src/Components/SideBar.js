@@ -10,8 +10,10 @@ import {
 
 import {HomeStack, AuthStack, BlueprintStack} from './Stacks';
 
+// import for auth context
 import {AuthContext} from './AuthContextProvider';
 
+// for styled components
 const styles = StyleSheet.create({
   sideBarSection: {
     flex: 1,
@@ -178,6 +180,7 @@ const SideBar = () => {
           )}
         />
 
+        {/* change screen according to the auth status */}
         {state.userToken == null ? (
           <>
             <Drawer.Screen

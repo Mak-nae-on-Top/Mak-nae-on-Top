@@ -6,15 +6,18 @@ import {BottomSheet, ListItem, SpeedDial} from 'react-native-elements';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import ImageSize from 'react-native-image-size';
 
+// user's cellphone size
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 const SetBeaconInfos = props => {
+  const [dialOpen, setDialOpen] = React.useState(false);
   const [blueprintSize, setBlueprintSize] = React.useState({
     width: 0,
     height: 0,
   });
 
+  // get the size from blueprint chosen by the user.
   React.useEffect(() => {
     ImageSize.getSize(`data:image/jpeg;base64,${props.item.base64}`).then(
       size => {
@@ -23,10 +26,13 @@ const SetBeaconInfos = props => {
     );
   }, []);
 
+  // rendering value to screen
   const [beaconInfos, setBeaconInfos] = React.useState(props.item.beaconInfo);
-  const [modifiedInfos, setModifiedInfos] = React.useState([]);
-  const [dialOpen, setDialOpen] = React.useState(false);
 
+  // accumulate modified beacons info
+  const [modifiedInfos, setModifiedInfos] = React.useState([]);
+
+  // modified beacon's info
   const [modifiedInfo, setModifiedInfo] = React.useState();
   const handleModifiedInfo = (key, value) => {
     value = Number(value);
@@ -47,7 +53,7 @@ const SetBeaconInfos = props => {
   // for new beacon's bottom sheet showing
   const [visiblePoint, setVisiblePoint] = React.useState({x: '', y: ''});
   const toggleVisiblePoint = (x, y) => {
-    // adjusting the screen proportion.
+    // adjusting the screen proportion
     x = (x / windowHeight) * blueprintSize.width;
     y = (y / windowHeight) * blueprintSize.height;
     setLocation({x: x, y: y});
