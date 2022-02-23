@@ -43,11 +43,14 @@ const DrawMap = props => {
           },
         )
         .then(response => {
-          console.log(response);
-          if (response.data.status === 'success') {
+          if (response.data) {
             let polyline = '';
-            response.data.coordinates.map(coor => {
-              return (polyline += `${coor.x},${coor.y} `);
+            response.data.map(coor => {
+              return (polyline += `${
+                (coor.x * windowHeight) / Number(props.blueprintSize.height)
+              },${
+                (coor.y * windowHeight) / Number(props.blueprintSize.height)
+              } `);
             });
             setPolyline(polyline);
           } else {
@@ -134,12 +137,7 @@ const DrawMap = props => {
             })}
             {/* destination */}
             {polyline !== '' && (
-              <Polyline
-                points={polyline}
-                fill="red"
-                stroke="red"
-                strokeWidth="8"
-              />
+              <Polyline points={polyline} stroke="red" strokeWidth="8" />
             )}
           </Svg>
         </View>
