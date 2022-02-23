@@ -81,8 +81,10 @@ We are currently working on a fix.
 
 > ### 1. Setup
 
-    - npm install && cd ios && pod install
-
+    npm install
+    
+    cd ios && pod install
+    
 [Application code git link](https://github.com/Mak-nae-on-Top/Mak-nae-on-Top/tree/main/frontend)
 
     - Framework : React Native 0.66.4
