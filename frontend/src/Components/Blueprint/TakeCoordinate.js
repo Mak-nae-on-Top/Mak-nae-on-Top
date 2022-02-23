@@ -26,6 +26,7 @@ const TakeCoordinate = props => {
       },
     );
   }, []);
+  const ratio = windowHeight / Number(blueprintSize.height);
 
   // rendering value to screen
   const [coordinates, setCoordinates] = React.useState(props.item.coordinate);
@@ -57,8 +58,8 @@ const TakeCoordinate = props => {
   const [visiblePoint, setVisiblePoint] = React.useState({x: '', y: ''});
   const toggleVisiblePoint = (x, y) => {
     // adjusting the screen proportion.
-    x = (x / windowHeight) * blueprintSize.height;
-    y = (y / windowHeight) * blueprintSize.height;
+    x = x / ratio;
+    y = y / ratio;
     setLocation({x: x, y: y});
     visiblePoint.x === x && visiblePoint.y === y && x !== '' && y !== ''
       ? setVisiblePoint({...visiblePoint, x: '', y: ''})
@@ -225,7 +226,6 @@ const TakeCoordinate = props => {
   const drawCoordinates = (value, idx) => {
     const x = Number(value.x);
     const y = Number(value.y);
-    const height = Number(blueprintSize.height);
     return (
       <G onPress={() => toggleVisibleIndex(idx)} key={idx}>
         {drawBottomSheet(value, idx)}
@@ -235,14 +235,14 @@ const TakeCoordinate = props => {
           strokeWidth="0.3"
           fontSize="15"
           fontWeight="bold"
-          x={(x * windowHeight) / height}
-          y={(y * windowHeight) / height + 30}
+          x={x * ratio}
+          y={y * ratio + 30}
           textAnchor="middle">
           {value.room_name}
         </SvgText>
         <Circle
-          cx={(x * windowHeight) / height}
-          cy={(y * windowHeight) / height}
+          cx={x * ratio}
+          cy={y * ratio}
           r="15"
           stroke="black"
           strokeWidth="0.5"
@@ -325,10 +325,7 @@ const TakeCoordinate = props => {
           <ImageZoom
             cropWidth={windowWidth}
             cropHeight={windowHeight}
-            imageWidth={
-              (Number(blueprintSize.width) * windowHeight) /
-              Number(blueprintSize.height)
-            }
+            imageWidth={Number(blueprintSize.width) * ratio}
             imageHeight={windowHeight}
             minScale={1}
             enableCenterFocus={false}
@@ -337,9 +334,7 @@ const TakeCoordinate = props => {
             <View style={{position: 'absolute', zIndex: 1}}>
               <Image
                 style={{
-                  width:
-                    (Number(blueprintSize.width) * windowHeight) /
-                    Number(blueprintSize.height),
+                  width: Number(blueprintSize.width) * ratio,
                   height: windowHeight,
                 }}
                 source={{uri: `data:image/jpeg;base64,${props.item.base64}`}}
@@ -349,13 +344,9 @@ const TakeCoordinate = props => {
             <View style={{position: 'absolute', zIndex: 2}}>
               <Svg
                 height={windowHeight}
-                width={
-                  (Number(blueprintSize.width) * windowHeight) /
-                  Number(blueprintSize.height)
-                }
+                width={Number(blueprintSize.width) * ratio}
                 viewBox={`0 0 ${
-                  (Number(blueprintSize.width) * windowHeight) /
-                  Number(blueprintSize.height)
+                  Number(blueprintSize.width) * ratio
                 } ${windowHeight}`}>
                 {coordinates !== undefined &&
                   coordinates.map((value, idx) => {
