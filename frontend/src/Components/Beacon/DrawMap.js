@@ -46,11 +46,7 @@ const DrawMap = props => {
           if (response.data) {
             let polyline = '';
             response.data.map(coor => {
-              return (polyline += `${
-                (coor.x * windowHeight) / Number(props.blueprintSize.height)
-              },${
-                (coor.y * windowHeight) / Number(props.blueprintSize.height)
-              } `);
+              return (polyline += `${coor.x * ratio},${coor.y * ratio} `);
             });
             setPolyline(polyline);
           } else {
@@ -102,14 +98,8 @@ const DrawMap = props => {
             } ${windowHeight}`}>
             {/* user's current location */}
             <Circle
-              cx={
-                (Number(props.location[0].x) * windowHeight) /
-                Number(props.blueprintSize.height)
-              }
-              cy={
-                (Number(props.location[0].y) * windowHeight) /
-                Number(props.blueprintSize.height)
-              }
+              cx={Number(props.location[0].x) * ratio}
+              cy={Number(props.location[0].y) * ratio}
               r="10"
               stroke="black"
               strokeWidth="0.5"
@@ -120,14 +110,8 @@ const DrawMap = props => {
               return (
                 <Circle
                   key={loc}
-                  cx={
-                    (Number(loc.x) * windowHeight) /
-                    Number(props.blueprintSize.height)
-                  }
-                  cy={
-                    (Number(loc.y) * windowHeight) /
-                    Number(props.blueprintSize.height)
-                  }
+                  cx={Number(loc.x) * ratio}
+                  cy={Number(loc.y) * ratio}
                   r="7"
                   stroke="black"
                   strokeWidth="0.5"
